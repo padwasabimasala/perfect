@@ -128,6 +128,13 @@ function build_perfcommon {
   cmd $ANT clean install-artifacts
 }
 
+function build_perfext {
+  purple Building perfext
+  cmd cd $NTP_DIR/perfext
+  cmd cp m2-settings.xml $HOME/.m2/settings.xml
+  cmd mvn -U -Plocal clean package jboss:hard-deploy
+}
+
 BUILD_DIR=$HOME
 NTP_DIR=$BUILD_DIR/ntp
 ANT=/usr/bin/ant
@@ -138,3 +145,5 @@ fetch perfcommon
 install_jboss
 setup_jboss
 build_perfcommon
+build_perfext
+build_perfext
