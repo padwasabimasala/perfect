@@ -1,0 +1,139 @@
+#!/bin/bash
+
+function banner {
+  echo
+  echo "        ,--.--._  "
+  echo " ------\" _, \___)     N"
+  echo "         / _/____)    T"
+  echo "         \//(____)    P"
+  echo " ------\     (__) "
+  echo "        \`-----\"   "
+  echo " _______  _______  _     _ "
+  echo "|       ||       || | _ | |"
+  echo "|    _  ||   _   || || || |"
+  echo "|   |_| ||  | |  ||       |"
+  echo "|    ___||  |_|  ||       |"
+  echo "|   |    |       ||   _   |"
+  echo "|___|    |_______||__| |__|"
+  echo
+}
+
+function clear_build_opts {
+  export PATH=''
+  export JAVA_HOME=''
+  export CATALINA_HOME=''
+  export ANT_HOME=''
+  export ANT_OPTS=''
+  export JBOSS_HOME=''
+  export MAVEN_OPTS=''
+  export MAVEN_HOME=''
+}
+
+function echo_build_opts {
+  echo Build Options
+  echo
+  echo "  " PATH = $PATH
+  echo "  " JAVA_HOME = $JAVA_HOME
+  echo "  " CATALINA_HOME = $CATALINA_HOME
+  echo "  " JBOSS_HOME = $JBOSS_HOME
+  echo "  " ANT_HOME = $ANT_HOME
+  echo "  " ANT_OPTS = $ANT_OPTS
+  echo "  " MAVEN_HOME = $MAVEN_HOME
+  echo "  " MAVEN_OPTS = $MAVEN_OPTS
+}
+
+function export_build_opts {
+  export PATH='/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
+  export JAVA_HOME=/Library/Java/Home
+  export CATALINA_HOME=/Library/Tomcat/Home
+  export JBOSS_HOME=$NTP_DIR/jboss
+  export ANT_HOME=/usr/bin/ant
+  export ANT_OPTS=-Xmx2048m
+  export MAVEN_HOME=$NTP_DIR/apache-maven-3.0.5
+  export MAVEN_OPTS='-Xmx512m -XX:MaxPermSize=384m'
+  export PATH=$MAVEN_HOME/bin:$PATH
+}
+
+function purple {
+  echo
+  echo "[35;40m$@[0m"
+}
+
+function blue {
+  echo "[34;40m$@[0m"
+}
+
+function yellow {
+  echo "[31;40m$@[0m"
+}
+
+function cmd {
+  blue "$@"
+  eval "$@"
+}
+
+function init {
+  purple Preparing to install into $NTP_DIR
+  banner
+  clear_build_opts
+  export_build_opts
+  echo_build_opts
+  mkdir -p $NTP_DIR
+  cd $NTP_DIR
+}
+
+function install_maven {
+  purple Installing Maven
+  if test -e $MAVEN_HOME; then
+    yellow 'Maven already installed'
+  else
+    cmd 'curl http://mirror.sdunix.com/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz > maven.tgz'
+    cmd 'tar -xvf maven.tgz'
+  fi
+}
+
+function fetch {
+  purple Updating source for $1
+  if test ! -e $1 ; then
+    git clone git@github.com:octanner/$1.git
+  else
+    cd $1
+    git pull
+  fi
+}
+
+function install_jboss {
+  purple Installing JBoss
+  if test -e '../jboss'; then
+    yellow 'JBoss already installed'
+  else
+    cmd $ANT setup-workspace
+  fi
+}
+
+function setup_jboss {
+  purple Doing JBoss setup
+  yellow Its over a hundred meg, so you may wanna get yourself some coffee
+  cmd cp build-tools/ojdbc6.jar ../jboss/server/default/lib/
+  cmd rm -Rf ../jboss/server/default/deploy/ROOT.war
+  cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\" >> ../jboss/bin/run.conf'
+}
+
+function build_perfcommon {
+  blue Building perfcommon
+  cmd cd perfcommon
+  cmd $ANT clean install-artifacts
+}
+
+BUILD_DIR=$HOME
+NTP_DIR=$BUILD_DIR/ntp
+ANT=/usr/bin/ant
+
+init
+install_maven
+fetch perfcommon
+install_jboss
+setup_jboss
+build_perfcommon
+
+
