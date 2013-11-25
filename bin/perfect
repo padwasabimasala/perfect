@@ -79,11 +79,11 @@ function init {
   export_build_opts
   echo_build_opts
   mkdir -p $NTP_DIR
-  cd $NTP_DIR
 }
 
 function install_maven {
   purple Installing Maven
+  cmd cd $NTP_DIR
   if test -e $MAVEN_HOME; then
     yellow 'Maven already installed'
   else
@@ -94,6 +94,7 @@ function install_maven {
 
 function fetch {
   purple Updating source for $1
+  cmd cd $NTP_DIR
   if test ! -e $1 ; then
     git clone git@github.com:octanner/$1.git
   else
@@ -104,6 +105,8 @@ function fetch {
 
 function install_jboss {
   purple Installing JBoss
+  yellow Its over a hundred meg, so you may wanna get yourself some coffee
+  cmd cd $NTP_DIR/perfcommon
   if test -e '../jboss'; then
     yellow 'JBoss already installed'
   else
@@ -113,7 +116,7 @@ function install_jboss {
 
 function setup_jboss {
   purple Doing JBoss setup
-  yellow Its over a hundred meg, so you may wanna get yourself some coffee
+  cmd cd $NTP_DIR/perfcommon
   cmd cp build-tools/ojdbc6.jar ../jboss/server/default/lib/
   cmd rm -Rf ../jboss/server/default/deploy/ROOT.war
   cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\" >> ../jboss/bin/run.conf'
@@ -121,7 +124,7 @@ function setup_jboss {
 
 function build_perfcommon {
   blue Building perfcommon
-  cmd cd perfcommon
+  cmd cd $NTP_DIR/perfcommon
   cmd $ANT clean install-artifacts
 }
 
