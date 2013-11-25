@@ -119,7 +119,7 @@ function setup_jboss {
   cmd cd $NTP_DIR/perfcommon
   cmd cp build-tools/ojdbc6.jar ../jboss/server/default/lib/
   cmd rm -Rf ../jboss/server/default/deploy/ROOT.war
-  cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000" >> ../jboss/bin/run.conf'
+  cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\"" >> ../jboss/bin/run.conf'
 }
 
 function build_perfcommon {
