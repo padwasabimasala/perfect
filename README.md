@@ -19,3 +19,9 @@
 ## Usage
 
 ./bin/perfect
+
+## Requirements
+
+1. Java 6
+2. Maven
+3. Ant
