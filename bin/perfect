@@ -1,11 +1,14 @@
+#!/bin/bash
+
+# Utilities ==================================
 
 function banner {
   echo
   echo "        ,--.--._  "
   echo " ------\" _, \___)     N"
-  echo "          / _/____)    T"
-  echo "          \//(____)    P"
-  echo " ------\      (__) "
+  echo "         \\ _/____)    T"
+  echo "         \\//(____)    P"
+  echo " ------\     (__) "
   echo "        \`-----\"   "
   echo " _______  _______  _     _ "
   echo "|       ||       || | _ | |"
@@ -56,27 +59,49 @@ function export_build_opts {
   export PATH=$MAVEN_HOME/bin:$PATH
 }
 
+function check_java_version {
+  java_version=$(java -version 2>&1 |head -n1 |cut -d\" -f2 |cut -c1-3)
+  if $java_version -ne "1.6"; then
+    red Java 1.6 not found. Your Java version is
+    java -version
+    exit 1
+  fi
+}
+
 function purple {
   echo
   echo "[35;40m$@[0m"
 }
 
 function blue {
-  echo "[34;40m$@[0m"
+  echo "[36;40m$@[0m"
 }
 
 function yellow {
+  echo "[33;40m$@[0m"
+}
+
+function red {
   echo "[31;40m$@[0m"
 }
 
 function cmd {
   blue "$@"
   eval "$@"
+  if test $? -ne 0; then
+    red "Error: with command \"$@\""
+    red "  You may have to do some clean up before reruning the app."
+    red "  Email matthew.thorley@octanner.com if you need assistance."
+    exit 1
+  fi
 }
+
+# Build Methods ==================================
 
 function init {
   purple Preparing to install into $NTP_DIR
   banner
+  check_java_version
   clear_build_opts
   export_build_opts
   echo_build_opts
@@ -91,7 +116,7 @@ function install_maven {
   else
     archive=$MAVEN_DIST-bin.tar.gz
     cmd "curl http://mirror.sdunix.com/apache/maven/maven-3/3.0.5/binaries/$archive > $archive"
-    cmd "tar zxfv $archive"
+    cmd "tar zxf $archive"
   fi
 }
 
@@ -103,7 +128,7 @@ function install_ant {
   else
     archive=$ANT_DIST-bin.tar.gz
     cmd "curl http://mirror.reverse.net/pub/apache//ant/binaries/$archive > $archive"
-    cmd "tar zxfv $archive"
+    cmd "tar zxf $archive"
   fi
 }
 
@@ -155,6 +180,8 @@ function build_perfext {
   cmd mvn -U -Plocal clean package jboss:hard-deploy
 }
 
+# Config  ==================================
+
 if test "x$1" = "x"; then
   INSTALL_DIR=$HOME
 else
@@ -164,6 +191,8 @@ fi
 NTP_DIR=$INSTALL_DIR/ntp
 ANT_DIST=apache-ant-1.9.2
 MAVEN_DIST=apache-maven-3.0.5
+
+# Build Process ==================================
 
 init
 install_maven
