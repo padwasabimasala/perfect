@@ -23,5 +23,6 @@
 ## Requirements
 
 1. Java 6
-2. Maven
-3. Ant
+
+Perfect will install Jboss, Ant, and Maven for you. If you wish to install
+these yourself, or use you're own versions,  you're on your own.
