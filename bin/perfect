@@ -155,8 +155,13 @@ function build_perfext {
   cmd mvn -U -Plocal clean package jboss:hard-deploy
 }
 
-BUILD_DIR=$HOME
-NTP_DIR=$BUILD_DIR/ntp
+if test "x$1" = "x"; then
+  INSTALL_DIR=$HOME
+else
+  INSTALL_DIR=$1
+fi
+
+NTP_DIR=$INSTALL_DIR/ntp
 ANT_DIST=apache-ant-1.9.2
 MAVEN_DIST=apache-maven-3.0.5
 
