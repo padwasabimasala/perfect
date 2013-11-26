@@ -121,20 +121,25 @@ function fetch {
 function install_jboss {
   purple Installing JBoss
   yellow Its over a hundred meg, so you may wanna get yourself some coffee
-  cmd cd $NTP_DIR/perfcommon
-  if test -e '../jboss'; then
+  if test -e $NTP_DIR/jboss; then
     yellow 'JBoss already installed'
   else
+    cmd cd $NTP_DIR/perfcommon
     cmd ant setup-workspace
   fi
 }
 
 function setup_jboss {
   purple Doing JBoss setup
-  cmd cd $NTP_DIR/perfcommon
-  cmd cp build-tools/ojdbc6.jar ../jboss/server/default/lib/
-  cmd rm -Rf ../jboss/server/default/deploy/ROOT.war
-  cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\"" >> ../jboss/bin/run.conf'
+  if test -e $NTP_DIR/jboss/setup_complete; then
+    yellow 'JBoss already setup'
+  else
+    cmd cd $NTP_DIR
+    cmd cp perfcommon/build-tools/ojdbc6.jar jboss/server/default/lib/
+    cmd rm -Rf jboss/server/default/deploy/ROOT.war
+    cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\"" >> jboss/bin/run.conf'
+    cmd touch jboss/setup_complete
+  fi
 }
 
 function build_perfcommon {
