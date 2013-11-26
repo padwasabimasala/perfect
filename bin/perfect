@@ -177,7 +177,7 @@ function build_perfext {
   purple Building perfext
   cmd cd $NTP_DIR/perfext
   cmd cp m2-settings.xml $HOME/.m2/settings.xml
-  cmd mvn -U -Plocal clean package jboss:hard-deploy
+  cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
 }
 
 # Config  ==================================
