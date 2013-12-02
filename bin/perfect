@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Config 
+
+ANT_DIST=apache-ant-1.9.2
+MAVEN_DIST=apache-maven-3.0.5
+
 # Utilities ==================================
 
 function banner {
@@ -18,6 +23,7 @@ function banner {
   echo "|   |    |       ||   _   |"
   echo "|___|    |_______||__| |__|"
   echo
+  echo_build_opts
 }
 
 function clear_build_opts {
@@ -96,16 +102,24 @@ function cmd {
   fi
 }
 
+function set_install_dir {
+  if test "x$1" = "x"; then
+    INSTALL_DIR=$HOME
+  else
+    INSTALL_DIR=$1
+  fi
+}
+
 # Build Methods ==================================
 
 function init {
-  purple Preparing to install into $NTP_DIR
-  banner
+  set_install_dir $1
+  NTP_DIR=$INSTALL_DIR/ntp
   check_java_version
   clear_build_opts
   export_build_opts
-  echo_build_opts
   mkdir -p $NTP_DIR
+  purple Preparing to install into $NTP_DIR
 }
 
 function install_maven {
@@ -180,21 +194,11 @@ function build_perfext {
   cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
 }
 
-# Config  ==================================
-
-if test "x$1" = "x"; then
-  INSTALL_DIR=$HOME
-else
-  INSTALL_DIR=$1
-fi
-
-NTP_DIR=$INSTALL_DIR/ntp
-ANT_DIST=apache-ant-1.9.2
-MAVEN_DIST=apache-maven-3.0.5
-
 # Build Process ==================================
 
-init
+init $@
+banner
+exit
 install_maven
 install_ant
 fetch perfcommon
