@@ -56,19 +56,19 @@ function export_build_opts {
   export PATH='/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
   export JAVA_HOME=/Library/Java/Home
   export CATALINA_HOME=/Library/Tomcat/Home
-  export JBOSS_HOME=$NTP_DIR/jboss
-  export ANT_HOME=$NTP_DIR/$ANT_DIST
+  export JBOSS_HOME=$INSTALL_DIR/jboss
+  export ANT_HOME=$INSTALL_DIR/$ANT_DIST
   export ANT_OPTS=-Xmx2048m
   export PATH=$ANT_HOME/bin:$PATH
-  export MAVEN_HOME=$NTP_DIR/$MAVEN_DIST
+  export MAVEN_HOME=$INSTALL_DIR/$MAVEN_DIST
   export MAVEN_OPTS='-Xmx512m -XX:MaxPermSize=384m'
   export PATH=$MAVEN_HOME/bin:$PATH
 }
 
 function check_java_version {
   java_version=$(java -version 2>&1 |head -n1 |cut -d\" -f2 |cut -c1-3)
-  if $java_version -ne "1.6"; then
-    red Java 1.6 not found. Your Java version is
+  if test $java_version != "1.6"; then
+    red "Java 1.6 not found. Your Java version is"
     java -version
     exit 1
   fi
@@ -102,29 +102,42 @@ function cmd {
   fi
 }
 
-function set_install_dir {
-  if test "x$1" = "x"; then
-    INSTALL_DIR=$HOME
+function get_install_dir {
+  if test "unset$1" = "unset"; then
+    local dir=$(read_install_dir)
+    if test "unset$dir" = "unset"; then
+      echo $HOME/ntp
+    else
+      echo $dir
+    fi
   else
-    INSTALL_DIR=$1
+    echo $1
   fi
+}
+
+function read_install_dir {
+  head -n1 ~/.ntp_install_dir 2>/dev/null || true
+}
+
+function write_install_dir {
+  echo $1 > ~/.ntp_install_dir
 }
 
 # Build Methods ==================================
 
 function init {
-  set_install_dir $1
-  NTP_DIR=$INSTALL_DIR/ntp
+  INSTALL_DIR=$(get_install_dir $@)
+  write_install_dir $INSTALL_DIR
   check_java_version
   clear_build_opts
   export_build_opts
-  mkdir -p $NTP_DIR
-  purple Preparing to install into $NTP_DIR
+  mkdir -p $INSTALL_DIR
+  purple Preparing to install into $INSTALL_DIR
 }
 
 function install_maven {
   purple Installing Maven
-  cmd cd $NTP_DIR
+  cmd cd $INSTALL_DIR
   if test -e $MAVEN_HOME; then
     yellow 'Maven already installed'
   else
@@ -136,7 +149,7 @@ function install_maven {
 
 function install_ant {
   purple Installing Ant
-  cmd cd $NTP_DIR
+  cmd cd $INSTALL_DIR
   if test -e $ANT_HOME; then
     yellow 'Ant already installed'
   else
@@ -148,7 +161,7 @@ function install_ant {
 
 function fetch {
   purple Updating source for $1
-  cmd cd $NTP_DIR
+  cmd cd $INSTALL_DIR
   if test ! -e $1 ; then
     git clone git@github.com:octanner/$1.git
   else
@@ -160,20 +173,20 @@ function fetch {
 function install_jboss {
   purple Installing JBoss
   yellow Its over a hundred meg, so you may wanna get yourself some coffee
-  if test -e $NTP_DIR/jboss; then
+  if test -e $INSTALL_DIR/jboss; then
     yellow 'JBoss already installed'
   else
-    cmd cd $NTP_DIR/perfcommon
+    cmd cd $INSTALL_DIR/perfcommon
     cmd ant setup-workspace
   fi
 }
 
 function setup_jboss {
   purple Doing JBoss setup
-  if test -e $NTP_DIR/jboss/setup_complete; then
+  if test -e $INSTALL_DIR/jboss/setup_complete; then
     yellow 'JBoss already setup'
   else
-    cmd cd $NTP_DIR
+    cmd cd $INSTALL_DIR
     cmd cp perfcommon/build-tools/ojdbc6.jar jboss/server/default/lib/
     cmd rm -Rf jboss/server/default/deploy/ROOT.war
     cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\"" >> jboss/bin/run.conf'
@@ -183,13 +196,13 @@ function setup_jboss {
 
 function build_perfcommon {
   purple Building perfcommon
-  cmd cd $NTP_DIR/perfcommon
+  cmd cd $INSTALL_DIR/perfcommon
   cmd ant clean install-artifacts
 }
 
 function build_perfext {
   purple Building perfext
-  cmd cd $NTP_DIR/perfext
+  cmd cd $INSTALL_DIR/perfext
   cmd cp m2-settings.xml $HOME/.m2/settings.xml
   cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
 }
@@ -198,7 +211,6 @@ function build_perfext {
 
 init $@
 banner
-exit
 install_maven
 install_ant
 fetch perfcommon
