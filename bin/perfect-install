@@ -1,0 +1,263 @@
+#!/bin/bash
+
+# Config 
+
+ANT_DIST=apache-ant-1.9.2
+MAVEN_DIST=apache-maven-3.0.5
+
+# Utilities ==================================
+
+function banner {
+  echo
+  echo "        ,--.--._  "
+  echo " ------\" _, \___)     N"
+  echo "         \\ _/____)    T"
+  echo "         \\//(____)    P"
+  echo " ------\     (__) "
+  echo "        \`-----\"   "
+  echo " _______  _______  _     _ "
+  echo "|       ||       || | _ | |"
+  echo "|    _  ||   _   || || || |"
+  echo "|   |_| ||  | |  ||       |"
+  echo "|    ___||  |_|  ||       |"
+  echo "|   |    |       ||   _   |"
+  echo "|___|    |_______||__| |__|"
+  echo
+  echo_build_opts
+}
+
+function clear_build_opts {
+  export PATH=''
+  export JAVA_HOME=''
+  export CATALINA_HOME=''
+  export ANT_HOME=''
+  export ANT_OPTS=''
+  export JBOSS_HOME=''
+  export MAVEN_OPTS=''
+  export MAVEN_HOME=''
+}
+
+function echo_build_opts {
+  echo Build Options
+  echo
+  echo "  " PATH = $PATH
+  echo "  " JAVA_HOME = $JAVA_HOME
+  echo "  " CATALINA_HOME = $CATALINA_HOME
+  echo "  " JBOSS_HOME = $JBOSS_HOME
+  echo "  " ANT_HOME = $ANT_HOME
+  echo "  " ANT_OPTS = $ANT_OPTS
+  echo "  " MAVEN_HOME = $MAVEN_HOME
+  echo "  " MAVEN_OPTS = $MAVEN_OPTS
+  echo "  " which ant = $(which ant)
+  echo "  " which mvn = $(which mvn)
+}
+
+function export_build_opts {
+  export PATH='/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
+  export JAVA_HOME=/Library/Java/Home
+  export CATALINA_HOME=/Library/Tomcat/Home
+  export JBOSS_HOME=$INSTALL_DIR/jboss
+  export ANT_HOME=$INSTALL_DIR/$ANT_DIST
+  export ANT_OPTS=-Xmx2048m
+  export PATH=$ANT_HOME/bin:$PATH
+  export MAVEN_HOME=$INSTALL_DIR/$MAVEN_DIST
+  export MAVEN_OPTS='-Xmx512m -XX:MaxPermSize=384m'
+  export PATH=$MAVEN_HOME/bin:$PATH
+}
+
+function check_java_version {
+  java_version=$(java -version 2>&1 |head -n1 |cut -d\" -f2 |cut -c1-3)
+  if test $java_version != "1.6"; then
+    red "Java 1.6 not found. Your Java version is"
+    java -version
+    exit 1
+  fi
+}
+
+function purple {
+  echo
+  echo "[35;40m$@[0m"
+}
+
+function blue {
+  echo "[36;40m$@[0m"
+}
+
+function yellow {
+  echo "[33;40m$@[0m"
+}
+
+function red {
+  echo "[31;40m$@[0m"
+}
+
+function cmd {
+  blue "$@"
+  eval "$@"
+  if test $? -ne 0; then
+    red "Error: with command \"$@\""
+    red "  You may have to do some clean up before reruning the app."
+    red "  Email matthew.thorley@octanner.com if you need assistance."
+    exit 1
+  fi
+}
+
+function get_install_dir {
+  if test "unset$1" = "unset"; then
+    local dir=$(read_install_dir)
+    if test "unset$dir" = "unset"; then
+      echo $HOME/ntp
+    else
+      echo $dir
+    fi
+  else
+    echo $1
+  fi
+}
+
+function read_install_dir {
+  head -n1 ~/.ntp_install_dir 2>/dev/null || true
+}
+
+function write_install_dir {
+  echo $1 > ~/.ntp_install_dir
+}
+
+function echoerr {
+  echo "$@" >&2
+}
+
+# Build Methods ==================================
+
+function init {
+  COMMAND=$1
+  shift
+  ARGS=$@
+  INSTALL_DIR=$(get_install_dir $1)
+  write_install_dir $INSTALL_DIR
+  check_java_version
+  clear_build_opts
+  export_build_opts
+  mkdir -p $INSTALL_DIR
+  purple Preparing to install into $INSTALL_DIR
+}
+
+function install_maven {
+  purple Installing Maven
+  cmd cd $INSTALL_DIR
+  if test -e $MAVEN_HOME; then
+    yellow 'Maven already installed'
+  else
+    archive=$MAVEN_DIST-bin.tar.gz
+    cmd "curl http://mirror.sdunix.com/apache/maven/maven-3/3.0.5/binaries/$archive > $archive"
+    cmd "tar zxf $archive"
+  fi
+}
+
+function install_ant {
+  purple Installing Ant
+  cmd cd $INSTALL_DIR
+  if test -e $ANT_HOME; then
+    yellow 'Ant already installed'
+  else
+    archive=$ANT_DIST-bin.tar.gz
+    cmd "curl http://mirror.reverse.net/pub/apache//ant/binaries/$archive > $archive"
+    cmd "tar zxf $archive"
+  fi
+}
+
+function fetch {
+  purple Updating source for $1
+  cmd cd $INSTALL_DIR
+  if test ! -e $1 ; then
+    git clone git@github.com:octanner/$1.git
+  else
+    cd $1
+    git pull
+  fi
+}
+
+function install_jboss {
+  purple Installing JBoss
+  yellow Its over a hundred meg, so you may wanna get yourself some coffee
+  if test -e $INSTALL_DIR/jboss; then
+    yellow 'JBoss already installed'
+  else
+    cmd cd $INSTALL_DIR/perfcommon
+    cmd ant setup-workspace
+  fi
+}
+
+function setup_jboss {
+  purple Doing JBoss setup
+  if test -e $INSTALL_DIR/jboss/setup_complete; then
+    yellow 'JBoss already setup'
+  else
+    cmd cd $INSTALL_DIR
+    cmd cp perfcommon/build-tools/ojdbc6.jar jboss/server/default/lib/
+    cmd rm -Rf jboss/server/default/deploy/ROOT.war
+    cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\"" >> jboss/bin/run.conf'
+    cmd touch jboss/setup_complete
+  fi
+}
+
+function build_perfcommon {
+  purple Building perfcommon
+  cmd cd $INSTALL_DIR/perfcommon
+  cmd ant clean install-artifacts
+}
+
+function build_perfext {
+  purple Building perfext
+  cmd cd $INSTALL_DIR/perfext
+  cmd cp m2-settings.xml $HOME/.m2/settings.xml
+  cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
+}
+
+function cd_and_exit {
+  cmd cd $1
+  exit 0
+}
+
+function install {
+  banner
+  install_maven
+  install_ant
+  fetch perfcommon
+  install_jboss
+  setup_jboss
+  build_perfcommon
+  fetch perfext
+  build_perfext
+}
+
+function usage {
+  local cmd=$(basename $0)
+  echoerr "Usage: $cmd <command> [args]"
+  echoerr
+  echoerr "Commands: "
+  echoerr "  install [path] - install ntp"
+  echoerr "  common         - cd to perfext dir"
+  echoerr "  ext            - cd to perfext dir"
+}
+
+
+# Main ================================
+
+# TODO
+# cd_and_extit does not work because this is subshell
+# do alias perfect="source /path/to/perfec" so cds will work
+# move all install stuff to perfect-install
+# make perfect command set install dir parse args
+
+
+ARGV=$@
+init $@
+
+case $COMMAND in
+  ext) cd_and_exit $INSTALL_DIR/perfext ;;
+  common) cd_and_exit $INSTALL_DIR/perfcommon ;;
+  install) install ;;
+  *) usage ;;
+esac
+
