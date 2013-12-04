@@ -104,27 +104,14 @@ function cmd {
 
 function get_install_dir {
   if test "unset$1" = "unset"; then
-    local dir=$(read_install_dir)
-    if test "unset$dir" = "unset"; then
-      echo $HOME/ntp
-    else
-      echo $dir
-    fi
+    echo $NTP_DIR
   else
     echo $1
   fi
 }
 
-function read_install_dir {
-  head -n1 ~/.ntp_install_dir 2>/dev/null || true
-}
-
 function write_install_dir {
   echo $1 > ~/.ntp_install_dir
-}
-
-function echoerr {
-  echo "$@" >&2
 }
 
 # Build Methods ==================================
@@ -214,50 +201,14 @@ function build_perfext {
   cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
 }
 
-function cd_and_exit {
-  cmd cd $1
-  exit 0
-}
-
-function install {
-  banner
-  install_maven
-  install_ant
-  fetch perfcommon
-  install_jboss
-  setup_jboss
-  build_perfcommon
-  fetch perfext
-  build_perfext
-}
-
-function usage {
-  local cmd=$(basename $0)
-  echoerr "Usage: $cmd <command> [args]"
-  echoerr
-  echoerr "Commands: "
-  echoerr "  install [path] - install ntp"
-  echoerr "  common         - cd to perfext dir"
-  echoerr "  ext            - cd to perfext dir"
-}
-
-
-# Main ================================
-
-# TODO
-# cd_and_extit does not work because this is subshell
-# do alias perfect="source /path/to/perfec" so cds will work
-# move all install stuff to perfect-install
-# make perfect command set install dir parse args
-
-
-ARGV=$@
+# Main
 init $@
-
-case $COMMAND in
-  ext) cd_and_exit $INSTALL_DIR/perfext ;;
-  common) cd_and_exit $INSTALL_DIR/perfcommon ;;
-  install) install ;;
-  *) usage ;;
-esac
-
+banner
+install_maven
+install_ant
+fetch perfcommon
+install_jboss
+setup_jboss
+build_perfcommon
+fetch perfext
+build_perfext
