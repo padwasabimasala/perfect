@@ -1,0 +1,20 @@
+#!/bin/bash
+
+dir=~/.perfect
+
+if test -e $dir; then
+  echo Perfect aready installed. Delete $dir and run again. >&2
+  exit 1
+else
+  mkdir -p $dir
+  cd $dir
+  curl -LOks https://github.com/octanner/perfect/archive/master.zip
+  unzip master.zip
+  cp -r perfect-master/bin .
+  rm bin/perfect-self
+  rm -Rf perfect-master
+  echo 'export PATH=$PATH:'$dir'/bin' >> ~/.bashrc
+  echo "alias perfect='source $dir/bin/perfect'" >> ~/.bashrc
+  echo Perfect installed to $dir
+  exit
+fi
