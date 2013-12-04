@@ -244,6 +244,13 @@ function usage {
 
 # Main ================================
 
+# TODO
+# cd_and_extit does not work because this is subshell
+# do alias perfect="source /path/to/perfec" so cds will work
+# move all install stuff to perfect-install
+# make perfect command set install dir parse args
+
+
 ARGV=$@
 init $@
 
