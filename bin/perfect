@@ -8,6 +8,9 @@ case $1 in
   ext)
     cd $NTP_DIR/perfext
   ;;
+  com)
+    cd $NTP_DIR/perfcommon
+  ;;
   common)
     cd $NTP_DIR/perfcommon
   ;;
