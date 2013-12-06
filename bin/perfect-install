@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Config 
+# Config
 
 ANT_DIST=apache-ant-1.9.2
 MAVEN_DIST=apache-maven-3.0.5
@@ -188,6 +188,12 @@ function setup_jboss {
   fi
 }
 
+function configure_perfcommon {
+  purple Configuring perfcommon
+  server_addr=$(get_local_server_address)
+  set_local_server_address $server_addr
+}
+
 function build_perfcommon {
   purple Building perfcommon
   cmd cd $INSTALL_DIR/perfcommon
@@ -201,6 +207,21 @@ function build_perfext {
   cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
 }
 
+function get_local_server_address {
+  ifconfig |grep 172.25.1 |cut -d' ' -f2
+}
+
+function set_local_server_address {
+  cmd cd $INSTALL_DIR/perfcommon
+  local ip_address="$1"
+  local file='seam-apps/common/src/main/java/com/octanner/common/ServerInformation.java'
+  local line=$(grep -n 'private static final String LOCAL_SERVER_ADDRESS =' $file |cut -d: -f1)
+  #cp $file ${file}.bak
+  cmd "perl -pi -e 's/\w+.*/private static final String LOCAL_SERVER_ADDRESS = \"$ip_address:8080\";/ if \$. == $line' ${file}"
+  #colordiff $file ${file}.bak
+  #git checkout $file
+}
+
 # Main
 init $@
 banner
@@ -209,6 +230,7 @@ install_ant
 fetch perfcommon
 install_jboss
 setup_jboss
+configure_perfcommon
 build_perfcommon
 fetch perfext
 build_perfext
