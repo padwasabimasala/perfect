@@ -45,6 +45,26 @@ function set_local_server_address {
   #git checkout $file
 }
 
+function select_branch_or_warn {
+  local branch=$(find_branch $1)
+  if test "unset$branch" == "unset"; then
+    warn "Unknown build option $1"
+  else
+    perfect-select skip_an_arg_for_the_cmd "$branch"
+  fi
+}
+
+function find_branch {
+  cd $INSTALL_DIR/perfcommon
+  local branches=$(git branch |sed -e 's/\*/ /g')
+  for branch in $branches; do
+    if test $branch == $1; then
+      echo $branch
+    fi
+  done
+  echo ""
+}
+
 # Main
 source $(which perfect-env)
 init
@@ -82,7 +102,7 @@ while test $# -ge 1 ; do
     notest) skiptest=true ;;
     nt) skiptest=true ;;
 
-    *) warn "Unknown opt $1" ;;
+    *) select_branch_or_warn $1;;
   esac
   shift
 done
