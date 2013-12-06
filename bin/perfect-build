@@ -81,6 +81,8 @@ while test $# -ge 1 ; do
     t) skiptest=false ;;
     notest) skiptest=true ;;
     nt) skiptest=true ;;
+
+    *) warn "Unknown opt $1" ;;
   esac
   shift
 done
