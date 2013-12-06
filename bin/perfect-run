@@ -1,1 +1,5 @@
-echo Not implemented
+#!/bin/bash
+source $(which perfect-env)
+init
+cmd cd $INSTALL_DIR
+cmd ./jboss/bin/run.sh -b $(get_local_server_address)
