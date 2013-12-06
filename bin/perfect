@@ -12,6 +12,10 @@ case $1 in
     cd $NTP_DIR/perfcommon
   ;;
   install) perfect-install $@ ;;
+  build) perfect-build $@ ;;
+  select) perfect-select $@ ;;
+  update) perfect-update $@ ;;
+  run) perfect-run $@ ;;
   *) perfect-usage ;;
 esac
 

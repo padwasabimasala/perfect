@@ -222,6 +222,13 @@ function set_local_server_address {
   #git checkout $file
 }
 
+# TODO
+# - build command
+# - update sorce
+# - ensure/force update source
+# - update both sources
+# - build by environment
+
 # Main
 init $@
 banner
