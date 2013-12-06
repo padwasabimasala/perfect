@@ -13,10 +13,24 @@ function build_perfcommon {
 }
 
 function build_perfext {
+  local dbenv=$1
+  local update=$2
+  local skiptest=$3
+
+  local mvn_opts="-Plocal -DdbEnv=$1"
+  if test "$update" == "true"; then
+    mvn_opts="$mvn_opts -U"
+  fi
+  if test "$skiptest" == "true"; then
+    mvn_opts="$mvn_opts -DskipTests"
+  fi
+  mvn_opts="$mvn_opts clean package jboss:hard-deploy"
+
   purple Building perfext
   cmd cd $INSTALL_DIR/perfext
   cmd cp m2-settings.xml $HOME/.m2/settings.xml
-  cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
+  #cmd mvn -U -Plocal clean package jboss:hard-deploy # from the docs
+  cmd mvn $mvn_opts
 }
 
 function set_local_server_address {
@@ -34,6 +48,50 @@ function set_local_server_address {
 # Main
 source $(which perfect-env)
 init
-configure_perfcommon
-build_perfcommon
-build_perfext
+
+build_ext=false
+build_com=false
+dbenv=dev
+update=false
+skiptest=true
+
+shift # drop command name (eg build) from args
+while test $# -ge 1 ; do
+  case $1 in
+    perfext) build_ext=true ;;
+    ext) build_ext=true ;;
+
+    perfcommon) build_com=true ;;
+    common) build_com=true ;;
+    com) build_com=true ;;
+
+    dev) dbenv=dev ;;
+    qa) dbenv=qa ;;
+    prod) dbenv=prd ;;
+    prd) dbenv=prd ;;
+    stage) dbenv=stage ;;
+    stg) dbenv=stage ;;
+
+    update) update=true ;;
+    u) update=true ;;
+    noupdate) update=false ;;
+    nu) update=false ;;
+
+    test) skiptest=false ;;
+    t) skiptest=false ;;
+    notest) skiptest=true ;;
+    nt) skiptest=true ;;
+  esac
+  shift
+done
+
+# Main
+opts=$(parse_opts $@)
+
+if test $build_com == true || ( test $build_com == false && test $build_ext == false ); then
+  configure_perfcommon
+  build_perfcommon
+fi
+if test $build_ext == true || ( test $build_com == false && test $build_ext == false ); then
+  build_perfext $dbenv $update $skiptest
+fi
