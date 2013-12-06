@@ -31,20 +31,6 @@ function write_install_dir {
   echo $1 > ~/.ntp_install_dir
 }
 
-function init {
-  PERFECT_HOME=$(get_perfect_home)
-  COMMAND=$1
-  shift
-  ARGS=$@
-  INSTALL_DIR=$(get_install_dir $1)
-  write_install_dir $INSTALL_DIR
-  check_java_version
-  clear_env
-  export_env
-  mkdir -p $INSTALL_DIR
-  purple Preparing to install into $INSTALL_DIR
-}
-
 function install_maven {
   purple Installing Maven
   cmd cd $INSTALL_DIR
@@ -106,6 +92,12 @@ function setup_jboss {
 # Main
 source $(which perfect-env)
 init $@
+write_install_dir $INSTALL_DIR
+check_java_version
+clear_env
+export_env
+mkdir -p $INSTALL_DIR
+purple Preparing to install into $INSTALL_DIR
 banner
 install_maven
 install_ant
