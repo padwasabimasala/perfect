@@ -8,17 +8,29 @@ case $1 in
   ext)
     cd $NTP_DIR/perfext
   ;;
+
   com)
     cd $NTP_DIR/perfcommon
   ;;
   common)
     cd $NTP_DIR/perfcommon
   ;;
+
+  i) perfect-install $@ ;;
   install) perfect-install $@ ;;
+
+  b) perfect-build $@ ;;
   build) perfect-build $@ ;;
+
+  s) perfect-select $@ ;;
   select) perfect-select $@ ;;
+
+  u) perfect-update $@ ;;
   update) perfect-update $@ ;;
+
+  r) perfect-run $@ ;;
   run) perfect-run $@ ;;
+
   *) perfect-usage ;;
 esac
 
