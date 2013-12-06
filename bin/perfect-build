@@ -31,20 +31,9 @@ function set_local_server_address {
   #git checkout $file
 }
 
-function fetch {
-  purple Updating source for $1
-  cmd cd $INSTALL_DIR
-  if test ! -e $1 ; then
-    git clone git@github.com:octanner/$1.git
-  else
-    cd $1
-    git pull
-  fi
-}
-
 # Main
 source $(which perfect-env)
-init $@
+INSTALL_DIR=$(get_install_dir)
 clear_env
 export_env
 configure_perfcommon

@@ -1,1 +1,22 @@
-echo Not implemented
+#!/bin/bash
+
+function checkout {
+  purple Switching $1 to branch $2
+  cmd cd $INSTALL_DIR/$1
+  cmd git checkout $2
+}
+
+# Main
+source $(which perfect-env)
+INSTALL_DIR=$(get_install_dir)
+echo install_dir $INSTALL_DIR
+
+# $1 is always the command
+if test "unset$2" == "unset"; then
+  branch=master
+else
+  branch=$2
+fi
+
+checkout perfcommon $branch
+checkout perfext $branch

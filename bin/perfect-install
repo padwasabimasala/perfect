@@ -91,13 +91,13 @@ function setup_jboss {
 
 # Main
 source $(which perfect-env)
-init $@
+INSTALL_DIR=$(get_install_dir $2)
+purple Preparing to install into $INSTALL_DIR
 write_install_dir $INSTALL_DIR
 check_java_version
 clear_env
 export_env
 mkdir -p $INSTALL_DIR
-purple Preparing to install into $INSTALL_DIR
 banner
 install_maven
 install_ant
@@ -106,4 +106,3 @@ install_jboss
 setup_jboss
 fetch perfext
 perfect-build
-
