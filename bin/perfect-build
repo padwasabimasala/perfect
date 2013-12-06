@@ -1,1 +1,52 @@
-echo Not implemented
+#!/bin/bash
+function configure_perfcommon {
+  purple Configuring perfcommon
+  server_addr=$(get_local_server_address)
+  server_port=$(get_local_server_port)
+  set_local_server_address $server_addr $server_port
+}
+
+function build_perfcommon {
+  purple Building perfcommon
+  cmd cd $INSTALL_DIR/perfcommon
+  cmd ant clean install-artifacts
+}
+
+function build_perfext {
+  purple Building perfext
+  cmd cd $INSTALL_DIR/perfext
+  cmd cp m2-settings.xml $HOME/.m2/settings.xml
+  cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
+}
+
+function set_local_server_address {
+  cmd cd $INSTALL_DIR/perfcommon
+  local address="$1"
+  local port="$2"
+  local file='seam-apps/common/src/main/java/com/octanner/common/ServerInformation.java'
+  local line=$(grep -n 'private static final String LOCAL_SERVER_ADDRESS =' $file |cut -d: -f1)
+  #cp $file ${file}.bak
+  cmd "perl -pi -e 's/\w+.*/private static final String LOCAL_SERVER_ADDRESS = \"$address:$port\";/ if \$. == $line' ${file}"
+  #colordiff $file ${file}.bak
+  #git checkout $file
+}
+
+function fetch {
+  purple Updating source for $1
+  cmd cd $INSTALL_DIR
+  if test ! -e $1 ; then
+    git clone git@github.com:octanner/$1.git
+  else
+    cd $1
+    git pull
+  fi
+}
+
+# Main
+source $(which perfect-env)
+INSTALL_DIR=$(get_install_dir)
+clear_env
+export_env
+configure_perfcommon
+build_perfcommon
+build_perfext

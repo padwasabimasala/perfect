@@ -1,12 +1,4 @@
 #!/bin/bash
-
-# Config
-
-ANT_DIST=apache-ant-1.9.2
-MAVEN_DIST=apache-maven-3.0.5
-
-# Utilities ==================================
-
 function banner {
   echo
   echo "        ,--.--._  "
@@ -23,46 +15,7 @@ function banner {
   echo "|   |    |       ||   _   |"
   echo "|___|    |_______||__| |__|"
   echo
-  echo_build_opts
-}
-
-function clear_build_opts {
-  export PATH=''
-  export JAVA_HOME=''
-  export CATALINA_HOME=''
-  export ANT_HOME=''
-  export ANT_OPTS=''
-  export JBOSS_HOME=''
-  export MAVEN_OPTS=''
-  export MAVEN_HOME=''
-}
-
-function echo_build_opts {
-  echo Build Options
-  echo
-  echo "  " PATH = $PATH
-  echo "  " JAVA_HOME = $JAVA_HOME
-  echo "  " CATALINA_HOME = $CATALINA_HOME
-  echo "  " JBOSS_HOME = $JBOSS_HOME
-  echo "  " ANT_HOME = $ANT_HOME
-  echo "  " ANT_OPTS = $ANT_OPTS
-  echo "  " MAVEN_HOME = $MAVEN_HOME
-  echo "  " MAVEN_OPTS = $MAVEN_OPTS
-  echo "  " which ant = $(which ant)
-  echo "  " which mvn = $(which mvn)
-}
-
-function export_build_opts {
-  export PATH='/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
-  export JAVA_HOME=/Library/Java/Home
-  export CATALINA_HOME=/Library/Tomcat/Home
-  export JBOSS_HOME=$INSTALL_DIR/jboss
-  export ANT_HOME=$INSTALL_DIR/$ANT_DIST
-  export ANT_OPTS=-Xmx2048m
-  export PATH=$ANT_HOME/bin:$PATH
-  export MAVEN_HOME=$INSTALL_DIR/$MAVEN_DIST
-  export MAVEN_OPTS='-Xmx512m -XX:MaxPermSize=384m'
-  export PATH=$MAVEN_HOME/bin:$PATH
+  echo_env
 }
 
 function check_java_version {
@@ -74,57 +27,20 @@ function check_java_version {
   fi
 }
 
-function purple {
-  echo
-  echo "[35;40m$@[0m"
-}
-
-function blue {
-  echo "[36;40m$@[0m"
-}
-
-function yellow {
-  echo "[33;40m$@[0m"
-}
-
-function red {
-  echo "[31;40m$@[0m"
-}
-
-function cmd {
-  blue "$@"
-  eval "$@"
-  if test $? -ne 0; then
-    red "Error: with command \"$@\""
-    red "  You may have to do some clean up before reruning the app."
-    red "  Email matthew.thorley@octanner.com if you need assistance."
-    exit 1
-  fi
-}
-
-function get_install_dir {
-  if test "unset$1" = "unset"; then
-    echo $NTP_DIR
-  else
-    echo $1
-  fi
-}
-
 function write_install_dir {
   echo $1 > ~/.ntp_install_dir
 }
 
-# Build Methods ==================================
-
 function init {
+  PERFECT_HOME=$(get_perfect_home)
   COMMAND=$1
   shift
   ARGS=$@
   INSTALL_DIR=$(get_install_dir $1)
   write_install_dir $INSTALL_DIR
   check_java_version
-  clear_build_opts
-  export_build_opts
+  clear_env
+  export_env
   mkdir -p $INSTALL_DIR
   purple Preparing to install into $INSTALL_DIR
 }
@@ -154,13 +70,12 @@ function install_ant {
 }
 
 function fetch {
-  purple Updating source for $1
+  purple Fetching source for $1
   cmd cd $INSTALL_DIR
   if test ! -e $1 ; then
     git clone git@github.com:octanner/$1.git
   else
-    cd $1
-    git pull
+    yellow "$1 already fetched"
   fi
 }
 
@@ -188,48 +103,8 @@ function setup_jboss {
   fi
 }
 
-function configure_perfcommon {
-  purple Configuring perfcommon
-  server_addr=$(get_local_server_address)
-  set_local_server_address $server_addr
-}
-
-function build_perfcommon {
-  purple Building perfcommon
-  cmd cd $INSTALL_DIR/perfcommon
-  cmd ant clean install-artifacts
-}
-
-function build_perfext {
-  purple Building perfext
-  cmd cd $INSTALL_DIR/perfext
-  cmd cp m2-settings.xml $HOME/.m2/settings.xml
-  cmd mvn -U -Plocal -DdbEnv=dev clean package jboss:hard-deploy
-}
-
-function get_local_server_address {
-  ifconfig |grep 172.25.1 |cut -d' ' -f2
-}
-
-function set_local_server_address {
-  cmd cd $INSTALL_DIR/perfcommon
-  local ip_address="$1"
-  local file='seam-apps/common/src/main/java/com/octanner/common/ServerInformation.java'
-  local line=$(grep -n 'private static final String LOCAL_SERVER_ADDRESS =' $file |cut -d: -f1)
-  #cp $file ${file}.bak
-  cmd "perl -pi -e 's/\w+.*/private static final String LOCAL_SERVER_ADDRESS = \"$ip_address:8080\";/ if \$. == $line' ${file}"
-  #colordiff $file ${file}.bak
-  #git checkout $file
-}
-
-# TODO
-# - build command
-# - update sorce
-# - ensure/force update source
-# - update both sources
-# - build by environment
-
 # Main
+source $(which perfect-env)
 init $@
 banner
 install_maven
@@ -237,7 +112,6 @@ install_ant
 fetch perfcommon
 install_jboss
 setup_jboss
-configure_perfcommon
-build_perfcommon
 fetch perfext
-build_perfext
+perfect-build
+
