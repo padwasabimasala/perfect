@@ -1,20 +1,6 @@
 # Perfect - The NTP Utility
 
-```
-        ,--.--._
- ------" _, \___)     N
-         / _/____)    T
-         \//(____)    P
- ------\     (__)
-        `-----"
- _______  _______  _     _
-|       ||       || | _ | |
-|    _  ||   _   || || || |
-|   |_| ||  | |  ||       |
-|    ___||  |_|  ||       |
-|   |    |       ||   _   |
-|___|    |_______||__| |__|
-```
+![Easy Button](http://i.imgur.com/1JqfhPh.jpg)
 
 ## About
 
@@ -59,6 +45,22 @@ Log bugs using github issues or fix them your self and submit a pull request.
 ## TODO
 Commands should be added to perfect to update and rebuild perfext and perfcommon.
 It might also need an option to configure perfcommon to play nice with VirtualBox.
+
+```
+        ,--.--._
+ ------" _, \___)     N
+         / _/____)    T
+         \//(____)    P
+ ------\     (__)
+        `-----"
+ _______  _______  _     _
+|       ||       || | _ | |
+|    _  ||   _   || || || |
+|   |_| ||  | |  ||       |
+|    ___||  |_|  ||       |
+|   |    |       ||   _   |
+|___|    |_______||__| |__|
+```
 
 ## License
 MIT
