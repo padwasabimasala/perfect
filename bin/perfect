@@ -5,6 +5,10 @@ if test "unset$NTP_DIR" = "unset"; then
 fi
 
 case $1 in
+  self-destroy)
+    perfect-self destroy
+  ;;
+
   ext)
     cd $NTP_DIR/perfext
   ;;

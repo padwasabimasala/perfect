@@ -8,7 +8,7 @@ echoerr "Usage: $(basename $)cmd <command> [args]"
 echoerr
 echoerr "Commands: "
 echoerr "  install [path] - install ntp"
-echoerr "  common         - cd to perfext dir"
+echoerr "  common         - cd to perfcommon dir"
 echoerr "  ext            - cd to perfext dir"
 
 exit 1
