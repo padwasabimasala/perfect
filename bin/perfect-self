@@ -5,6 +5,7 @@ dir=~/.perfect
 case $1 in
   destroy)
     rm -Rf $dir
+    echo Deleted $dir
     exit
   ;;
   *) ;;
