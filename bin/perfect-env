@@ -1,0 +1,96 @@
+#!/bin/bash
+
+ANT_DIST=apache-ant-1.9.2
+MAVEN_DIST=apache-maven-3.0.5
+
+function clear_env {
+  export PATH=''
+  export JAVA_HOME=''
+  export CATALINA_HOME=''
+  export ANT_HOME=''
+  export ANT_OPTS=''
+  export JBOSS_HOME=''
+  export MAVEN_OPTS=''
+  export MAVEN_HOME=''
+}
+
+function echo_env {
+  echo Build Options
+  echo
+  echo "  " PATH = $PATH
+  echo "  " JAVA_HOME = $JAVA_HOME
+  echo "  " CATALINA_HOME = $CATALINA_HOME
+  echo "  " JBOSS_HOME = $JBOSS_HOME
+  echo "  " ANT_HOME = $ANT_HOME
+  echo "  " ANT_OPTS = $ANT_OPTS
+  echo "  " MAVEN_HOME = $MAVEN_HOME
+  echo "  " MAVEN_OPTS = $MAVEN_OPTS
+  echo "  " which ant = $(which ant)
+  echo "  " which mvn = $(which mvn)
+}
+
+function export_env {
+  export PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+  export JAVA_HOME=/Library/Java/Home
+  export CATALINA_HOME=/Library/Tomcat/Home
+  export JBOSS_HOME=$INSTALL_DIR/jboss
+  export ANT_HOME=$INSTALL_DIR/$ANT_DIST
+  export ANT_OPTS=-Xmx2048m
+  export PATH=$ANT_HOME/bin:$PATH
+  export MAVEN_HOME=$INSTALL_DIR/$MAVEN_DIST
+  export MAVEN_OPTS='-Xmx512m -XX:MaxPermSize=384m'
+  export PATH=$MAVEN_HOME/bin:$PATH
+  export PATH=$(dirname $0):$PATH
+}
+
+function purple {
+  echo
+  echo "[35;40m$@[0m"
+}
+
+function blue {
+  echo "[36;40m$@[0m"
+}
+
+function yellow {
+  echo "[33;40m$@[0m"
+}
+
+function red {
+  echo "[31;40m$@[0m"
+}
+
+function warn {
+  yellow "Warning! : $@"
+}
+
+function cmd {
+  blue "$@"
+  eval "$@"
+  if test $? -ne 0; then
+    red "Error: with command \"$@\""
+    exit 1
+  fi
+}
+
+function get_install_dir {
+  if test "unset$1" = "unset"; then
+    echo $NTP_DIR
+  else
+    echo $1
+  fi
+}
+
+function get_local_server_address {
+  ifconfig |grep 172.25.1 |cut -d' ' -f2
+}
+
+function get_local_server_port {
+  echo 8080
+}
+
+function init {
+  export INSTALL_DIR=$(get_install_dir $1)
+  clear_env
+  export_env
+}
