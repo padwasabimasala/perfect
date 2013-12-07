@@ -7,7 +7,10 @@ function echoerr {
 echoerr "Usage: $(basename $)cmd <command> [args]"
 echoerr
 echoerr "Commands: "
-echoerr "  install [path] - install ntp"
+echoerr "  install [path]   - install ntp"
+echoerr "  build   [opts]   - build ntp"
+echoerr "  select  [branch] - switch branches"
+echoerr "  run            - start the perfext server"
 echoerr "  common         - cd to perfcommon dir"
 echoerr "  ext            - cd to perfext dir"
 
