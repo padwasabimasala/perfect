@@ -1,1 +1,7 @@
-echo Not implemented
+#!/bin/bash
+source $(which perfect-env)
+init
+cmd cd $INSTALL_DIR/perfcommon
+cmd git pull
+cmd cd $INSTALL_DIR/perfext
+cmd git pull

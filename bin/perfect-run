@@ -1,5 +1,7 @@
 #!/bin/bash
 source $(which perfect-env)
 init
+addr=$(get_local_server_address)
+purple Starting server on $addr
 cmd cd $INSTALL_DIR
-cmd ./jboss/bin/run.sh -b $(get_local_server_address)
+cmd ./jboss/bin/run.sh -b $addr

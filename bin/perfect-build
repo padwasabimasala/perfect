@@ -34,6 +34,7 @@ function build_perfext {
 }
 
 function set_local_server_address {
+  purple Setting LOCAL_SERVER_ADDRESS=$1
   cmd cd $INSTALL_DIR/perfcommon
   local address="$1"
   local port="$2"
@@ -108,8 +109,6 @@ while test $# -ge 1 ; do
 done
 
 # Main
-opts=$(parse_opts $@)
-
 if test $build_com == true || ( test $build_com == false && test $build_ext == false ); then
   configure_perfcommon
   build_perfcommon
