@@ -82,7 +82,7 @@ function get_install_dir {
 }
 
 function get_local_server_address {
-  ifconfig |grep 172.25.1 |cut -d' ' -f2
+  ifconfig |grep 172.25. |cut -d' ' -f2
 }
 
 function get_local_server_port {
