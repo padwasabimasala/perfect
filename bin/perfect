@@ -26,14 +26,17 @@ case $1 in
   b) perfect-build $@ ;;
   build) perfect-build $@ ;;
 
+  r) perfect-run $@ ;;
+  run) perfect-run $@ ;;
+
   s) perfect-select $@ ;;
   select) perfect-select $@ ;;
 
+  t) perfect-tidy $@ ;;
+  tidy) perfect-tidy $@ ;;
+
   u) perfect-update $@ ;;
   update) perfect-update $@ ;;
-
-  r) perfect-run $@ ;;
-  run) perfect-run $@ ;;
 
   *) perfect-usage ;;
 esac
