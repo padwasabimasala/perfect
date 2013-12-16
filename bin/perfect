@@ -20,6 +20,10 @@ case $1 in
     cd $NTP_DIR/perfcommon
   ;;
 
+  jboss)
+    cd $NTP_DIR/jboss
+  ;;
+
   i) perfect-install $@ ;;
   install) perfect-install $@ ;;
 
