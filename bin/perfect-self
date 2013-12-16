@@ -2,19 +2,14 @@
 
 dir=~/.perfect
 
-case $1 in
-  destroy)
-    rm -Rf $dir
-    echo Deleted $dir
-    exit
-  ;;
-  *) ;;
-esac
+function uninstall() {
+  local dir=$1
+  rm -Rf $dir
+  echo Deleted $dir
+}
 
-if test -e $dir; then
-  echo Perfect aready installed. Delete $dir and run again. >&2
-  exit 1
-else
+function download_and_unpack() {
+  local dir=$1
   mkdir -p $dir
   cd $dir
   curl -LOks https://github.com/octanner/perfect/archive/master.zip
@@ -22,15 +17,38 @@ else
   rm master.zip
   cp -r perfect-master/bin .
   rm -Rf perfect-master
-  if test -e ~/.zshrc; then
-    echo "Adding PATH and alias to ~/.zshrc"
-    echo 'export PATH=$PATH:'$dir'/bin' >> ~/.zshrc
-    echo "alias perfect='source $dir/bin/perfect'" >> ~/.zshrc
+}
+
+function setup() {
+  local rcfile=$1
+  echo "Adding PATH and alias to $rcfile"
+  echo 'export PATH=$PATH:'$dir'/bin' >> $rcfile
+  echo "alias perfect='source $dir/bin/perfect'" >> $rcfile
+}
+
+case $1 in
+  destroy)
+    uninstall $dir
+  ;;
+
+  update)
+    uninstall $dir
+    download_and_unpack $dir
+  ;;
+
+  *)
+  if test -e $dir; then
+    echo Perfect aready installed. Delete $dir and run again. >&2
+    exit 1
   else
-    echo "Adding PATH and alias to ~/.bashrc"
-    echo 'export PATH=$PATH:'$dir'/bin' >> ~/.bashrc
-    echo "alias perfect='source $dir/bin/perfect'" >> ~/.bashrc
+    download_and_unpack $dir
+    if test -e ~/.zshrc; then
+      setup ~/.zshrc
+    else
+      setup ~/.bashrc
+    fi
+    echo Perfect installed to $dir
   fi
-  echo Perfect installed to $dir
-  exit
-fi
+  ;;
+esac
+
