@@ -9,6 +9,10 @@ case $1 in
     perfect-self destroy
   ;;
 
+  self-update)
+    perfect-self update
+  ;;
+
   ext)
     cd $NTP_DIR/perfext
   ;;
