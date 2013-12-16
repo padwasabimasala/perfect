@@ -22,8 +22,15 @@ else
   rm master.zip
   cp -r perfect-master/bin .
   rm -Rf perfect-master
-  echo 'export PATH=$PATH:'$dir'/bin' >> ~/.bashrc
-  echo "alias perfect='source $dir/bin/perfect'" >> ~/.bashrc
+  if test -e ~/.zshrc; then
+    echo "Adding PATH and alias to ~/.zshrc"
+    echo 'export PATH=$PATH:'$dir'/bin' >> ~/.zshrc
+    echo "alias perfect='source $dir/bin/perfect'" >> ~/.zshrc
+  else
+    echo "Adding PATH and alias to ~/.bashrc"
+    echo 'export PATH=$PATH:'$dir'/bin' >> ~/.bashrc
+    echo "alias perfect='source $dir/bin/perfect'" >> ~/.bashrc
+  fi
   echo Perfect installed to $dir
   exit
 fi
