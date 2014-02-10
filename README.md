@@ -2,27 +2,24 @@
 
 ![Easy Button](http://i.imgur.com/1JqfhPh.jpg)
 
-## About
-
-Perfect is a small bash utility for working with NTP. Install perfect, and then use it to install, and move around in NTP.
-
-If you don't work at Octanner on NTP it probably isn't going to be useful to you.
-
-## Easy Install
+Perfect is the **EASIEST** way to install NTP
 
 ```
+  # First install perfect
+
   curl -s https://raw.github.com/octanner/perfect/master/bin/perfect-self | bash
+
+  # Then install ntp
+
+  perfect install
+
 ```
+
+The only requirement for perfet is Java 1.6. It will install Jboss, Ant, and Maven for you, and build ntp.
 
 # Examples
 
-## Use perfect to install ntp
-
-Perfect only assumes you have Java 1.6. It will install Jboss, Ant, and Maven for you, and build ntp.
-
-```
-perfect install # Installs perfcommon and perfext to $HOME/ntp
-```
+## Use perfect to install ntp to a specific directory
 
 ```
 perfect install projects/ntp # Installs perfcommon and perfext to projects/ntp
