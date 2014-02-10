@@ -40,6 +40,9 @@ perfect common # changes dirs to your perfcommon directory
 Log bugs using github issues or fix them your self and submit a pull request.
 
 ## TODO
+If a download fails or gets an error eg 404 perfect should notify the user
+It would be nice if we always installed the lastest Ant and Maven
+It would be nice if there were commands to update Ant and Maven to the latest
 Commands should be added to perfect to update and rebuild perfext and perfcommon.
 It might also need an option to configure perfcommon to play nice with VirtualBox.
 
