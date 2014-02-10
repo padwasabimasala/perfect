@@ -38,7 +38,7 @@ case $1 in
 
   *)
   if test -e $dir; then
-    echo Perfect aready installed. Delete $dir and run again. >&2
+    echo Perfect already installed at $dir. >&2
     exit 1
   else
     download_and_unpack $dir
