@@ -50,7 +50,7 @@ function install_ant {
     yellow 'Ant already installed'
   else
     archive=$ANT_DIST-bin.tar.gz
-    cmd "curl http://mirror.reverse.net/pub/apache//ant/binaries/$archive > $archive"
+    cmd "curl http://archive.apache.org/dist/ant/binaries/$archive > $archive"
     cmd "tar zxf $archive"
   fi
 }
