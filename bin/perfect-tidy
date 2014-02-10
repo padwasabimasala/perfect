@@ -1,1 +1,6 @@
-echo Not Implemented
+#!/bin/bash
+source $(which perfect-env)
+init
+purple Tidying up the place
+cmd cd $INSTALL_DIR/perfext
+cmd git reset --hard HEAD
