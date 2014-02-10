@@ -33,19 +33,13 @@ perfect update
 
 ### Build the App
 
-#### Build prod
+#### Build a given environment
 
 ```
-perfect build prod
+perfect build prod|qa|dev
 ```
 
-#### Build QA
-
-```
-perfect build prod
-```
-
-#### Build Qa, with Maven -U and skip tests
+#### Build a little faster with Maven -U and skip tests
 
 ```
 perfect build qa true true
