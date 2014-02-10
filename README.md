@@ -17,15 +17,49 @@ Perfect is the **EASIEST** way to install NTP
 
 The only requirement for perfet is Java 1.6. It will install Jboss, Ant, and Maven for you, and build ntp.
 
-# Examples
+## Commands
 
-## Use perfect to install ntp to a specific directory
+### Install to a specific directory
 
 ```
-perfect install projects/ntp # Installs perfcommon and perfext to projects/ntp
+perfect install some/dir/ntp
 ```
 
-## Use perfect to quickly change to a project directory
+### Update Sources (perfcommon and perfext)
+
+```
+perfect update
+```
+
+### Build the App
+
+#### Build prod
+
+```
+perfect build prod
+```
+
+#### Build QA
+
+```
+perfect build prod
+```
+
+#### Build Qa, with Maven -U and skip tests
+
+```
+perfect build qa true true
+```
+
+### Run the app
+
+```
+perfect run
+```
+
+### Changing Directories
+
+#### Use perfect to quickly change to a project directory
 
 ```
 perfect ext # changes dirs to your perfext directory
@@ -34,6 +68,27 @@ perfect ext # changes dirs to your perfext directory
 ```
 perfect common # changes dirs to your perfcommon directory
 ```
+
+```
+perfect jboss # changes dirs to your jboss directory
+```
+
+### Changing Branches
+
+#### Use perfect to change all sources to the given branch
+
+```
+perfect select R_14_02_1 # switches perfcommon and perfext to branch R_14_02_1
+```
+
+#### Quickly switch back to master by passing no arg
+
+```
+perfect select
+```
+
+
+
 
 # Contribute
 
