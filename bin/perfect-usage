@@ -4,14 +4,29 @@ function echoerr {
   echo "$@" >&2
 }
 
-echoerr "Usage: $(basename $)cmd <command> [args]"
+echoerr "Usage: perfect cmd <command> [args]"
 echoerr
-echoerr "Commands: "
-echoerr "  install [path]   - install ntp"
-echoerr "  build   [opts]   - build ntp"
-echoerr "  select  [branch] - switch branches"
-echoerr "  run            - start the perfext server"
-echoerr "  common         - cd to perfcommon dir"
-echoerr "  ext            - cd to perfext dir"
+echoerr "All Action and Movement commands are aliased to the first letter of the command"
+echoerr "Example: 'perfect i' is equivilent to 'perfect install'"
+echoerr
+echoerr "Actions Commands"
+echoerr
+echoerr "  install  [path]    - install ntp"
+echoerr "  build    [opts]    - build ntp"
+echoerr "  select   [branch]  - switch branches"
+echoerr "  run                - start the perfext server"
+echoerr "  update             - get the latest sources"
+echoerr
+echoerr "Movement Commands"
+echoerr
+echoerr "  common             - cd to perfcommon dir"
+echoerr "  ext                - cd to perfext dir"
+echoerr "  jboss              - cd to jboss dir"
+echoerr
+echoerr "Perfect Commands"
+echoerr
+echoerr "  self-update        - get the latest release of perfect"
+echoerr "  self-destroy       - uninstall perfect"
+echoerr
 
 exit 1
