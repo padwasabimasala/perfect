@@ -15,7 +15,7 @@ Perfect is the **EASIEST** way to install NTP
 
 ```
 
-The only requirement for perfet is Java 1.6. It will install Jboss, Ant, and Maven for you, and build ntp.
+The only requirement for perfet is Java 1.6, and having set up your ssh keys for github. It will install Jboss, Ant, and Maven for you, and build ntp.
 
 ## Commands
 
