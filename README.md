@@ -7,7 +7,7 @@ Perfect is the **EASIEST** way to install NTP
 ```
   # First install perfect
 
-  curl -s https://raw.github.com/octanner/perfect/master/bin/perfect-self | bash
+  curl -s https://raw.githubusercontent.com/octanner/perfect/master/bin/perfect-self | bash
 
   # Then install ntp
 
