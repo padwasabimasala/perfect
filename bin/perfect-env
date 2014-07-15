@@ -43,21 +43,28 @@ function export_env {
   export PATH=$(dirname $0):$PATH
 }
 
+# local NO_COLOUR="\[\033[0m\]"
+# local LIGHT_CYAN="\[\033[1;36m\]"
+# bash$ echo -e '\E[34;47mThis prints in blue.'; tput sgr0
+# bash$ echo -e '\E[33;44m'"yellow text on blue background"; tput sgr0
+# bash$ echo -e '\E[1;33;44m'"BOLD yellow text on blue background"; tput sgr0
+
+
 function purple {
   echo
-  echo "[35;40m$@[0m"
+  echo "[35;36m$@[0m"
 }
 
 function blue {
-  echo "[36;40m$@[0m"
+  echo "[36;36m$@[0m"
 }
 
 function yellow {
-  echo "[33;40m$@[0m"
+  echo "[33;36m$@[0m"
 }
 
 function red {
-  echo "[31;40m$@[0m"
+  echo "[31;36m$@[0m"
 }
 
 function warn {
