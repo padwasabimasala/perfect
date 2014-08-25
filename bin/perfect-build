@@ -33,6 +33,27 @@ function build_perfext {
   cmd mvn $mvn_opts
 }
 
+function build_perfork {
+  local dbenv=$1
+  local update=$2
+  local skiptest=$3
+
+  local mvn_opts="-Plocal -DdbEnv=$1"
+  if test "$update" == "true"; then
+    mvn_opts="$mvn_opts -U"
+  fi
+  if test "$skiptest" == "true"; then
+    mvn_opts="$mvn_opts -DskipTests"
+  fi
+  mvn_opts="$mvn_opts clean package jboss:hard-deploy"
+
+  purple Building perfork
+  cmd cd $INSTALL_DIR/perfork
+  cmd cp m2-settings.xml $HOME/.m2/settings.xml
+  #cmd mvn -U -Plocal clean package jboss:hard-deploy # from the docs
+  cmd mvn $mvn_opts
+}
+
 function set_local_server_address {
   purple Setting LOCAL_SERVER_ADDRESS=$1
   cmd cd $INSTALL_DIR/perfcommon
@@ -72,6 +93,7 @@ init
 
 build_ext=false
 build_com=false
+build_fork=false
 dbenv=dev
 update=false
 skiptest=true
@@ -79,6 +101,9 @@ skiptest=true
 shift # drop command name (eg build) from args
 while test $# -ge 1 ; do
   case $1 in
+    perfork) build_fork=true ;;
+    fork) build_fork=true ;;
+
     perfext) build_ext=true ;;
     ext) build_ext=true ;;
 
@@ -108,11 +133,13 @@ while test $# -ge 1 ; do
   shift
 done
 
-# Main
-if test $build_com == true || ( test $build_com == false && test $build_ext == false ); then
+if test $build_com == true || ( test $build_com == false && test $build_ext == false && test $build_fork == false ); then
   configure_perfcommon
   build_perfcommon
 fi
-if test $build_ext == true || ( test $build_com == false && test $build_ext == false ); then
+if test $build_ext == true || ( test $build_com == false && test $build_ext == false && test $build_fork == false ); then
   build_perfext $dbenv $update $skiptest
+fi
+if test $build_fork == true; then
+  build_perfork $dbenv $update $skiptest
 fi
