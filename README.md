@@ -111,7 +111,8 @@ It might also need an option to configure perfcommon to play nice with VirtualBo
 |___|    |_______||__| |__|
 ```
 
-## License
-MIT
 
+## License
+
+(MIT)[http://opensource.org/licenses/MIT]
 
