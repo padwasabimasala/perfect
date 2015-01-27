@@ -2,6 +2,6 @@
 source $(which perfect-env)
 init
 addr=$(get_local_server_address)
-purple Starting server on $addr
+purple Starting server on localhost:8080
 cmd cd $INSTALL_DIR
-cmd bash ./jboss/bin/run.sh -b $addr
+cmd bash ./jboss/bin/run.sh 
