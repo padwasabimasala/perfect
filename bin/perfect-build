@@ -1,6 +1,7 @@
 #!/bin/bash
 function configure_perfcommon {
   purple Configuring perfcommon
+  install_api_redirects
   server_addr=$(get_local_server_address)
   server_port=$(get_local_server_port)
   set_local_server_address $server_addr $server_port
@@ -31,6 +32,16 @@ function build_perfext {
   cmd cp m2-settings.xml $HOME/.m2/settings.xml
   #cmd mvn -U -Plocal clean package jboss:hard-deploy # from the docs
   cmd mvn $mvn_opts
+}
+
+
+function install_api_redirects {
+  purple Install Redirects for Catalog API
+  # cmd mkdir -p $INSTALL_DIR/jboss/server/default/conf/jboss.web/localhost/
+  # cmd 'echo "RewriteRule ^/api/(.*)$ https://dev.appreciatehub.com$0 [R,L]" >> $INSTALL_DIR/jboss/server/default/conf/jboss.web/localhost/rewrite.properties"'
+  # cmd perl -pi -e 's/\\<Host name\\=\\"localhost\\"\\>\\/\\<Host name\\=\\"localhost\\"\\>\\<Valve className=\\"org.jboss.web.rewrite.RewriteValve\\" />/'
+  # <Host name="localhost"> <Valve className="org.jboss.web.rewrite.RewriteValve" />
+  # jboss/server/default/deploy/jbossweb.sar/server.xml
 }
 
 function set_local_server_address {
