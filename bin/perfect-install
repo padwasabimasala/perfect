@@ -55,6 +55,21 @@ function install_ant {
   fi
 }
 
+function install_helpers {
+  purple Installing Helpers
+  cmd cd $INSTALL_DIR
+  if test -e 'batman'; then
+    yellow 'Batman is already installed'
+  else
+    cmd "git clone https://github.com/octanner/batman.git batman"
+  fi
+  if test -e "spiderman"; then
+    yellow 'Spiderman is already installed'
+  else
+    cmd "git clone https://github.com/octanner/spiderman.git spiderman"
+  fi
+}
+
 function fetch {
   purple Fetching source for $1
   cmd cd $INSTALL_DIR
@@ -97,6 +112,7 @@ write_install_dir $INSTALL_DIR
 check_java_version
 mkdir -p $INSTALL_DIR
 banner
+install_helpers
 install_maven
 install_ant
 fetch perfcommon

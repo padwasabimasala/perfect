@@ -6,6 +6,13 @@ function configure_perfcommon {
   set_local_server_address $server_addr $server_port
 }
 
+function configure_batman {
+  purple Configuring batman
+  cmd "cat ntp/batman/config.json | sed \"s|~/Projects/octanner/ntp/perfext|$INSTALL_DIR|\" > ntp/batman/config.json.new"
+  cmd "mv ntp/batman/config.json ntp/batman/config.json.orig"
+  cmd "mv ntp/batman/config.json.new ntp/batman/config.json"
+}
+
 function build_perfcommon {
   purple Building perfcommon
   cmd cd $INSTALL_DIR/perfcommon
@@ -122,6 +129,7 @@ done
 
 # Main
 if test $build_com == true || ( test $build_com == false && test $build_ext == false ); then
+  configure_batman
   configure_perfcommon
   build_perfcommon
 fi
