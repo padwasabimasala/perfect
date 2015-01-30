@@ -1,4 +1,6 @@
 #!/bin/bash
+# TODO start batman/spiderman ?
+# TODO should we add node.js proxy script to support catalog?
 source $(which perfect-env)
 init
 addr=$(get_local_server_address)
