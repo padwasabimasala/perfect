@@ -8,9 +8,9 @@ function configure_perfcommon {
 
 function configure_batman {
   purple Configuring batman
-  cmd "cat ntp/batman/config.json | sed \"s|~/Projects/octanner/ntp/perfext|$INSTALL_DIR|\" > ntp/batman/config.json.new"
-  cmd "mv ntp/batman/config.json ntp/batman/config.json.orig"
-  cmd "mv ntp/batman/config.json.new ntp/batman/config.json"
+  cmd "cat $INSTALL_DIR/batman/config.json | sed \"s|~/Projects/octanner/ntp/perfext|$INSTALL_DIR|\" > $INSTALL_DIR/batman/config.json.new"
+  cmd "mv $INSTALL_DIR/batman/config.json $INSTALL_DIR/batman/config.json.orig"
+  cmd "mv $INSTALL_DIR/batman/config.json.new $INSTALL_DIR/batman/config.json"
 }
 
 function build_perfcommon {
