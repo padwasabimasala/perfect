@@ -1,9 +1,12 @@
 #!/bin/bash
 function configure_perfcommon {
+  local set_local=$1
   purple Configuring perfcommon
-  server_addr=$(get_local_server_address)
-  server_port=$(get_local_server_port)
-  set_local_server_address $server_addr $server_port
+  if test "$set_local" == "true"; then
+    server_addr=$(get_local_server_address)
+    server_port=$(get_local_server_port)
+    set_local_server_address $server_addr $server_port
+  fi
 }
 
 function configure_batman {
@@ -41,26 +44,14 @@ function build_perfext {
 }
 
 function set_local_server_address {
-  purple Setting LOCAL_SERVER_ADDRESS=localhost
-  #purple Setting LOCAL_SERVER_ADDRESS=$1 
-  # We need to be careful modifying files to replace localhost, its used as a constant all over the codebase and
-  # if not used on the DEV environment will typically break.  See references below:
-  # perfcommon/seam-apps/application/src/hot/com/octanner/application/ordermanagement/controller/SocialNetworkingConfigurationController.java
-  # perfcommon/seam-apps/application/src/hot/com/octanner/ntp/application/walloffame/WallOfFameClient.java
-  # perfcommon/seam-apps/common/src/hot/java/com/octanner/common/constants/P42Constants.java
-  # perfcommon/seam-apps/common/src/hot/java/com/octanner/common/service/usermanagement/URLTimerTask.java
-  # perfcommon/seam-apps/common/src/hot/java/com/octanner/common/util/ExternalHubUtil.java
-  # perfcommon/seam-apps/common/src/hot/java/com/octanner/common/ws/messages/SampleMessageWSServlet.java
-  # perfcommon/seam-apps/common/src/main/java/com/octanner/common/redis/RedisServerInfo.java
-  # perfcommon/seam-apps/common/src/main/java/com/octanner/common/ServerInformation.java
-  # perfcommon/seam-apps/common/src/main/java/com/octanner/p42/pdf/RendererFilter.java 
-  # cmd cd $INSTALL_DIR/perfcommon
-  #local address="$1"
-  #local port="$2"
-  #local file='seam-apps/common/src/main/java/com/octanner/common/ServerInformation.java'
-  #local line=$(grep -n 'private static final String LOCAL_SERVER_ADDRESS =' $file |cut -d: -f1)
+  purple Setting LOCAL_SERVER_ADDRESS=$1 
+  cmd cd $INSTALL_DIR/perfcommon
+  local address="$1"
+  local port="$2"
+  local file='seam-apps/common/src/main/java/com/octanner/common/ServerInformation.java'
+  local line=$(grep -n 'private static final String LOCAL_SERVER_ADDRESS =' $file |cut -d: -f1)
   #cp $file ${file}.bak
-  #cmd "perl -pi -e 's/\w+.*/private static final String LOCAL_SERVER_ADDRESS = \"$address:$port\";/ if \$. == $line' ${file}"
+  cmd "perl -pi -e 's/\w+.*/private static final String LOCAL_SERVER_ADDRESS = \"$address:$port\";/ if \$. == $line' ${file}"
   #colordiff $file ${file}.bak
   #git checkout $file
 }
@@ -94,12 +85,16 @@ build_com=false
 dbenv=dev
 update=false
 skiptest=true
+set_local=false
 
 shift # drop command name (eg build) from args
 while test $# -ge 1 ; do
   case $1 in
     perfext) build_ext=true ;;
     ext) build_ext=true ;;
+
+    setlocal) set_local=true ;;
+    local) set_local=true ;;
 
     perfcommon) build_com=true ;;
     common) build_com=true ;;
@@ -130,7 +125,7 @@ done
 # Main
 if test $build_com == true || ( test $build_com == false && test $build_ext == false ); then
   configure_batman
-  configure_perfcommon
+  configure_perfcommon $set_local
   build_perfcommon
 fi
 if test $build_ext == true || ( test $build_com == false && test $build_ext == false ); then
