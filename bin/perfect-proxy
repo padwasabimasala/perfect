@@ -1,0 +1,92 @@
+
+var http = require('http');
+var https = require('https');
+var zlib = require('zlib');
+var url = require('url');
+var fs = require('fs');
+
+function processProxy(req, res, port, proxiedHost, proxiedPort) {
+  function cleanBody(body) {
+    body = body.toString('utf8');
+    body = body.replace(new RegExp('\\:'+proxiedPort,'g'), ':'+port);
+    return new Buffer(body,'utf8');
+  }
+  function cleanHeaderFromRequest(req) {
+    return JSON.parse(JSON.stringify(req.headers).replace(new RegExp('\\:'+port,'g'),':'+proxiedPort));
+  }
+
+  function cleanHeaderFromResponse(req) {
+    return JSON.parse(JSON.stringify(req.headers).replace(new RegExp('\\:'+proxiedPort,'g'),':'+port));
+  }
+
+  function shouldClean(req) {
+    if(req.headers['content-encoding'] === "gzip") return false;
+    if (req.url.indexOf('.js') > -1 || req.url.indexOf('.html') > -1 || 
+        ( req.headers['content-type'] &&
+          ( req.headers['content-type'].indexOf('javascript') > -1 || 
+            req.headers['content-type'].indexOf('html') > -1) ) )
+      return true;
+    else
+      return false;
+  }
+
+  var data = new Buffer(0);
+  var headers = cleanHeaderFromRequest(req);
+
+  req.on('data', function(e) { data=Buffer.concat([data,e]); });
+  req.on('end', function() {
+    console.log('PROXY '+req.method+' '+proxiedHost+':'+proxiedPort+req.url);
+    var requestObj = {host:proxiedHost, port:proxiedPort, method:req.method, path:req.url, headers:headers};
+    var proxy;
+    var reqCallback = function(response) {
+      var reqHeaders = cleanHeaderFromResponse(response);
+      console.log(" response from " + req.url + ' ' +response.statusCode);
+      console.log(" response headers: ", reqHeaders);
+      res.writeHead(response.statusCode,reqHeaders);
+      if(response.headers['content-encoding'] === "gzip") {
+        response.pipe(res);
+      } else {
+        response.on('data', function(body) {
+          var clean = shouldClean(req);
+          res.write(cleanBody(body));
+        });
+      }
+      response.on('end', function() { res.end(); });
+    };
+
+    if(proxiedPort === 443) {
+      requestObj.rejectUnauthorized = false;
+      requestObj.agent = false;
+      proxy = https.request(requestObj, reqCallback);
+    } else {
+      proxy = http.request(requestObj, reqCallback);
+    }
+
+    proxy.on('error', function(e) {  console.log(e); });
+    proxy.write(data);
+    proxy.end();
+  });
+}
+
+
+var httpPort = 8081;
+http.createServer(function (req, res) {
+  var parsedUrl = url.parse(req.url);
+  if(parsedUrl.pathname.indexOf('/api/') > -1) {
+    processProxy(req, res, httpPort, "dev.appreciatehub.com", 443);
+  } else {
+    processProxy(req, res, httpPort, "localhost", 8080);
+  }
+}).listen(httpPort);
+
+          //if(response.headers['content-encoding'] === "gzip") {
+          //  zlib.unzip(body, function(err, result) {
+          //    console.log(err);
+              //console.log(body.toString('utf8'));
+          //    var b = cleanBody(result);
+          //    zlib.gzip(b, function(err,result2) { 
+          //      res.write(result2); 
+          //    });
+          //  });
+          //  console.log(req.url + ' GZIPPED. ');
+          //} else {
