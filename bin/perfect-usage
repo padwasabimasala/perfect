@@ -16,7 +16,6 @@ echoerr "  build    [opts]    - build ntp"
 echoerr "  select   [branch]  - switch branches"
 echoerr "  run                - start the perfext server"
 echoerr "  update             - get the latest sources"
-echoerr "  proxy              - create proxy to normalize apis and jboss on one host (port 8081)"
 echoerr
 echoerr "Movement Commands"
 echoerr
