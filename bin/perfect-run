@@ -1,8 +1,14 @@
 #!/bin/bash
-# TODO start batman/spiderman ?
 source $(which perfect-env)
 init
 addr=$(get_local_server_address)
+
+echo 
+blue "For live reloads of XHTML JSF files run batman, for live reloads of css run spider (see below)"
+purple "To start batman (requires node) run: 'cd $INSTALL_DIR/batman ; export JBOSS_HOME=$INSTALL_DIR/jboss ; make run'"
+purple "To start spiderman (requires node and lr) run: 'cd $INSTALL_DIR/spiderman ; export JBOSS_HOME=$INSTALL_DIR/jboss ; lr'"
+echo
+
 purple Starting server on localhost:8080
 cmd cd $INSTALL_DIR
-cmd bash ./jboss/bin/run.sh 
+cmd bash ./jboss/bin/run.sh > jboss.log

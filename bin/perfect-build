@@ -11,7 +11,7 @@ function configure_perfcommon {
 
 function configure_batman {
   purple Configuring batman
-  cmd "cat $INSTALL_DIR/batman/config.json | sed \"s|~/Projects/octanner/ntp/perfext|$INSTALL_DIR|\" > $INSTALL_DIR/batman/config.json.new"
+  cmd "cat $INSTALL_DIR/batman/config.json | sed \"s|~/Projects/octanner/ntp/perfext|$INSTALL_DIR/perfext|\" > $INSTALL_DIR/batman/config.json.new"
   cmd "mv $INSTALL_DIR/batman/config.json $INSTALL_DIR/batman/config.json.orig"
   cmd "mv $INSTALL_DIR/batman/config.json.new $INSTALL_DIR/batman/config.json"
 }
