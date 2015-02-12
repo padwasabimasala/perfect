@@ -13,4 +13,4 @@ echo
 
 purple Starting server on localhost:8080
 cmd cd $INSTALL_DIR
-cmd bash ./jboss/bin/run.sh > jboss.log
+cmd bash ./jboss/bin/run.sh
