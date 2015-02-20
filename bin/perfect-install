@@ -55,6 +55,21 @@ function install_ant {
   fi
 }
 
+function install_helpers {
+  purple Installing Helpers
+  cmd cd $INSTALL_DIR
+  if test -e 'batman'; then
+    yellow 'Batman is already installed'
+  else
+    cmd "git clone https://github.com/octanner/batman.git batman"
+  fi
+  if test -e "spiderman"; then
+    yellow 'Spiderman is already installed'
+  else
+    cmd "git clone https://github.com/octanner/spiderman.git spiderman"
+  fi
+}
+
 function fetch {
   purple Fetching source for $1
   cmd cd $INSTALL_DIR
@@ -84,7 +99,7 @@ function setup_jboss {
     cmd cd $INSTALL_DIR
     cmd cp perfcommon/build-tools/ojdbc6.jar jboss/server/default/lib/
     cmd rm -Rf jboss/server/default/deploy/ROOT.war
-    cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000\"" >> jboss/bin/run.conf'
+    cmd 'echo "JAVA_OPTS=\"-Xms512m -Xmx1G -XX:MaxPermSize=512m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -Ddevlocal=true -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n\"" >> jboss/bin/run.conf'
     cmd touch jboss/setup_complete
   fi
 }
@@ -97,6 +112,7 @@ write_install_dir $INSTALL_DIR
 check_java_version
 mkdir -p $INSTALL_DIR
 banner
+install_helpers
 install_maven
 install_ant
 fetch perfcommon

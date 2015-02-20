@@ -1,9 +1,19 @@
 #!/bin/bash
 function configure_perfcommon {
+  local set_local=$1
   purple Configuring perfcommon
-  server_addr=$(get_local_server_address)
-  server_port=$(get_local_server_port)
-  set_local_server_address $server_addr $server_port
+  if test "$set_local" == "true"; then
+    server_addr=$(get_local_server_address)
+    server_port=$(get_local_server_port)
+    set_local_server_address $server_addr $server_port
+  fi
+}
+
+function configure_batman {
+  purple Configuring batman
+  cmd "cat $INSTALL_DIR/batman/config.json | sed \"s|~/Projects/octanner/ntp/perfext|$INSTALL_DIR/perfext|\" > $INSTALL_DIR/batman/config.json.new"
+  cmd "mv $INSTALL_DIR/batman/config.json $INSTALL_DIR/batman/config.json.orig"
+  cmd "mv $INSTALL_DIR/batman/config.json.new $INSTALL_DIR/batman/config.json"
 }
 
 function build_perfcommon {
@@ -34,7 +44,7 @@ function build_perfext {
 }
 
 function set_local_server_address {
-  purple Setting LOCAL_SERVER_ADDRESS=$1
+  purple Setting LOCAL_SERVER_ADDRESS=$1 
   cmd cd $INSTALL_DIR/perfcommon
   local address="$1"
   local port="$2"
@@ -75,12 +85,16 @@ build_com=false
 dbenv=dev
 update=false
 skiptest=true
+set_local=false
 
 shift # drop command name (eg build) from args
 while test $# -ge 1 ; do
   case $1 in
     perfext) build_ext=true ;;
     ext) build_ext=true ;;
+
+    setlocal) set_local=true ;;
+    local) set_local=true ;;
 
     perfcommon) build_com=true ;;
     common) build_com=true ;;
@@ -110,7 +124,8 @@ done
 
 # Main
 if test $build_com == true || ( test $build_com == false && test $build_ext == false ); then
-  configure_perfcommon
+  configure_batman
+  configure_perfcommon $set_local
   build_perfcommon
 fi
 if test $build_ext == true || ( test $build_com == false && test $build_ext == false ); then
