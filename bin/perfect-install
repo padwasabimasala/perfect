@@ -119,4 +119,5 @@ fetch perfcommon
 install_jboss
 setup_jboss
 fetch perfext
+fetch perfork
 perfect-build dev update
