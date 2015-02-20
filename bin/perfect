@@ -46,6 +46,9 @@ case $1 in
   u) perfect-update $@ ;;
   update) perfect-update $@ ;;
 
+  p) perfect-proxy $@ ;;
+  proxy) perfect-proxy $@ ;;
+
   *) perfect-usage ;;
 esac
 

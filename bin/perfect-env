@@ -84,7 +84,11 @@ function get_install_dir {
   if test "unset$1" = "unset"; then
     echo $NTP_DIR
   else
-    echo $1
+    if [[ "$1" = /* ]]; then
+      echo $1
+    else
+      echo "$(pwd)/$1"
+    fi
   fi
 }
 

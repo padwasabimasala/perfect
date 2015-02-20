@@ -2,6 +2,15 @@
 source $(which perfect-env)
 init
 addr=$(get_local_server_address)
-purple Starting server on $addr
+
+echo 
+blue "For live reloads of XHTML JSF files run batman, for live reloads of css run spider (see below)"
+blue "1. Ensure you modify $INSTALL_DIR/batman/config.json to set the correct version of perfext"
+blue "2. Ensure you modify $INSTALL_DIR/spiderman/package.json to set the correct version of perfext"
+blue "3. To start batman (requires node) run: 'cd $INSTALL_DIR/batman ; export JBOSS_HOME=$INSTALL_DIR/jboss ; make run'"
+blue "4. To start spiderman (requires node and lr) run: 'cd $INSTALL_DIR/spiderman ; export JBOSS_HOME=$INSTALL_DIR/jboss ; lr'"
+echo
+
+purple Starting server on localhost:8080
 cmd cd $INSTALL_DIR
-cmd bash ./jboss/bin/run.sh -b $addr
+cmd bash ./jboss/bin/run.sh
