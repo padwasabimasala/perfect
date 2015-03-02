@@ -17,6 +17,10 @@ case $1 in
     cd $NTP_DIR/perfext
   ;;
 
+  fork)
+    cd $NTP_DIR/perfork
+  ;;
+
   com)
     cd $NTP_DIR/perfcommon
   ;;
