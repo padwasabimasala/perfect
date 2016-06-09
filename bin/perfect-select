@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function checkout {
   purple Switching $1 to branch $2
