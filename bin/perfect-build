@@ -38,8 +38,8 @@ function build_perfext {
 
   purple Building perfext
   cmd cd $INSTALL_DIR/perfext
-  cmd cp m2-settings.xml $HOME/.m2/settings.xml
-  #cmd mvn -U -Plocal clean package jboss:hard-deploy # from the docs
+  #FIXME: add settings to perfect repo
+  cmd cp dev-tools/settings.xml $MAVEN_HOME/conf/settings.xml
   cmd mvn $mvn_opts
 }
 

@@ -38,7 +38,7 @@ function install_maven {
     yellow 'Maven already installed'
   else
     archive=$MAVEN_DIST-bin.tar.gz
-    cmd "curl http://mirror.sdunix.com/apache/maven/maven-3/3.0.5/binaries/$archive > $archive"
+    cmd "curl http://apache.cs.utah.edu/maven/maven-3/$MAVEN_VERSION/binaries/$archive > $archive"
     cmd "tar zxf $archive"
   fi
 }
