@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ANT_DIST=apache-ant-1.9.2
 MAVEN_DIST=apache-maven-3.0.5

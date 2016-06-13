@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source $(which perfect-env)
 init
 addr=$(get_local_server_address)

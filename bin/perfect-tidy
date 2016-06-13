@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source $(which perfect-env)
 init
 purple Tidying up the place
