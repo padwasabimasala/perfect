@@ -2,6 +2,8 @@
 
 ![Easy Button](http://i.imgur.com/1JqfhPh.jpg)
 
+#For more information on NTP, please see [here](https://confluence.octanner.com/pages/viewpage.action?pageId=6465994)
+
 Perfect is the **EASIEST** way to install NTP
 
 ```
