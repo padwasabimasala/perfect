@@ -8,15 +8,19 @@ function uninstall() {
   echo Deleted $dir
 }
 
-function download_and_unpack() {
+
+function download() {
+  git clone --depth 1 git@github.com:octanner/perfect.git $dir/perfect
+}
+
+function move_into() {
+    local dir=$1
+    mv perfect/* $dir/
+}
+
+function make_dir() {
   local dir=$1
   mkdir -p $dir
-  cd $dir
-  curl -LOks https://github.com/octanner/perfect/archive/master.zip
-  unzip master.zip
-  rm master.zip
-  cp -r perfect-master/bin .
-  rm -Rf perfect-master
 }
 
 function setup() {
@@ -26,6 +30,19 @@ function setup() {
   echo "alias perfect='source $dir/bin/perfect'" >> $rcfile
 }
 
+function install(){
+    local dir=$1
+    make_dir $dir
+    if ! test -e perfect; then
+      download
+    else
+      mv perfect $dir/
+    fi
+    cd $dir
+    move_into $dir
+    rm -rf perfect
+}
+
 case $1 in
   destroy)
     uninstall $dir
@@ -33,7 +50,7 @@ case $1 in
 
   update)
     uninstall $dir
-    download_and_unpack $dir
+    install $dir
   ;;
 
   *)
@@ -41,7 +58,7 @@ case $1 in
     echo Perfect already installed at $dir. >&2
     exit 1
   else
-    download_and_unpack $dir
+    install $dir
     if test -e ~/.zshrc; then
       setup ~/.zshrc
     else
