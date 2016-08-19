@@ -6,6 +6,8 @@
 
 Perfect is the **EASIEST** way to install NTP
 
+## Installation
+
 ### Current Method
 
 1. Clone the perfect repo
