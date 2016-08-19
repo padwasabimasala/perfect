@@ -6,6 +6,18 @@
 
 Perfect is the **EASIEST** way to install NTP
 
+### Current Method
+
+1. Clone the perfect repo
+2. Add an alias for perfect to your .bash_profile `alias perfect='<path>/perfect/bin/perfect'`
+3. Add `<path>/perfect/bin` to PATH in .bash_profile
+4. Restart your terminal
+5. Create a root directory named "ntp" anywhere you prefer. Example: `mkdir ~/ntp`
+6. `cd ~/ntp`
+7. `perfect install`
+
+### Old Method (Needs to be updated now that the perfect repo is private. Curl command requires an oAuth token.)
+
 ```
   # First install perfect
 
@@ -17,7 +29,7 @@ Perfect is the **EASIEST** way to install NTP
 
 ```
 
-The only requirement for perfet is Java 1.6, and having set up your ssh keys for github. It will install Jboss, Ant, and Maven for you, and build ntp.
+The only requirement for perfect is Java 1.6, and having set up your ssh keys for github. It will install Jboss, Ant, and Maven for you, and build ntp.
 
 ## Commands
 
