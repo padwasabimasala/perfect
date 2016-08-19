@@ -16,6 +16,17 @@ Perfect is the **EASIEST** way to install NTP
 6. `cd ~/ntp`
 7. `perfect install`
 
+#### Note on Maven and Artifactory
+Maven needs a settings.xml file in its .m2 directory. This file contains information about OC Tanner's Artifactory repo. If you haven't already generated this file, these instructions will help you get it.
+
+1. https://artifactory.octanner.net/webapp/#/home
+2. Artifacts
+3. Set Me Up
+4. Insert Credentials
+5. Generate Maven Settings
+6. Generate Settings
+7. Download the generated file to `~/.m2`
+
 ### Old Method (Needs to be updated now that the perfect repo is private. Curl command requires an oAuth token.)
 
 ```
