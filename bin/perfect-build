@@ -38,8 +38,6 @@ function build_perfext {
 
   purple Building perfext
   cmd cd $INSTALL_DIR/perfext
-  cmd cp m2-settings.xml $HOME/.m2/settings.xml
-  #cmd mvn -U -Plocal clean package jboss:hard-deploy # from the docs
   cmd mvn $mvn_opts
 }
 
@@ -59,8 +57,6 @@ function build_perfork {
 
   purple Building perfork
   cmd cd $INSTALL_DIR/perfork
-  cmd cp m2-settings.xml $HOME/.m2/settings.xml
-  #cmd mvn -U -Plocal clean package jboss:hard-deploy # from the docs
   cmd mvn $mvn_opts
 }
 

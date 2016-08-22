@@ -38,7 +38,7 @@ function install_maven {
     yellow 'Maven already installed'
   else
     archive=$MAVEN_DIST-bin.tar.gz
-    cmd "curl https://archive.apache.org/dist/maven/maven-3/3.0.5/binaries/$archive > $archive"
+    cmd "curl http://apache.cs.utah.edu/maven/maven-3/$MAVEN_VERSION/binaries/$archive > $archive"
     cmd "tar zxf $archive"
   fi
 }
@@ -61,12 +61,12 @@ function install_helpers {
   if test -e 'batman'; then
     yellow 'Batman is already installed'
   else
-    cmd "git clone https://github.com/octanner/batman.git batman"
+    cmd "git clone git@github.com:octanner/batman.git batman"
   fi
   if test -e "spiderman"; then
     yellow 'Spiderman is already installed'
   else
-    cmd "git clone https://github.com/octanner/spiderman.git spiderman"
+    cmd "git clone git@github.com:octanner/spiderman.git spiderman"
   fi
 }
 

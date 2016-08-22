@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
 ANT_DIST=apache-ant-1.9.2
-MAVEN_DIST=apache-maven-3.0.5
+MAVEN_VERSION=3.2.5
+MAVEN_DIST=apache-maven-$MAVEN_VERSION
 
 function clear_env {
-  export PATH=''
-  export JAVA_HOME=''
-  export CATALINA_HOME=''
   export ANT_HOME=''
   export ANT_OPTS=''
   export JBOSS_HOME=''
@@ -30,9 +28,6 @@ function echo_env {
 }
 
 function export_env {
-  export PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
-  export JAVA_HOME=/Library/Java/Home
-  export CATALINA_HOME=/Library/Tomcat/Home
   export JBOSS_HOME=$INSTALL_DIR/jboss
   export ANT_HOME=$INSTALL_DIR/$ANT_DIST
   export ANT_OPTS=-Xmx2048m
