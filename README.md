@@ -2,7 +2,34 @@
 
 ![Easy Button](http://i.imgur.com/1JqfhPh.jpg)
 
+#For more information on NTP, please see [here](https://confluence.octanner.com/pages/viewpage.action?pageId=6465994)
+
 Perfect is the **EASIEST** way to install NTP
+
+## Installation
+
+### Current Method
+
+1. Clone the perfect repo
+2. Add an alias for perfect to your .bash_profile `alias perfect='<path>/perfect/bin/perfect'`
+3. Add `<path>/perfect/bin` to PATH in .bash_profile
+4. Restart your terminal
+5. Create a root directory named "ntp" anywhere you prefer. Example: `mkdir ~/ntp`
+6. `cd ~/ntp`
+7. `perfect install`
+
+#### Note on Maven and Artifactory
+Maven needs a settings.xml file in its .m2 directory. This file contains information about OC Tanner's Artifactory repo. If you haven't already generated this file, these instructions will help you get it.
+
+1. https://artifactory.octanner.net/webapp/#/home
+2. Artifacts
+3. Set Me Up
+4. Insert Credentials
+5. Generate Maven Settings
+6. Generate Settings
+7. Download the generated file to `~/.m2`
+
+### Old Method (Needs to be updated now that the perfect repo is private. Curl command requires an oAuth token.)
 
 ```
   # First install perfect
@@ -15,7 +42,7 @@ Perfect is the **EASIEST** way to install NTP
 
 ```
 
-The only requirement for perfet is Java 1.6, and having set up your ssh keys for github. It will install Jboss, Ant, and Maven for you, and build ntp.
+The only requirement for perfect is Java 1.6, and having set up your ssh keys for github. It will install Jboss, Ant, and Maven for you, and build ntp.
 
 ## Commands
 
