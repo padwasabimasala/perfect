@@ -61,7 +61,7 @@ function install_helpers {
   if test -e 'batman'; then
     yellow 'Batman is already installed'
   else
-    cmd "git clone git@github.com:octanner/batman.git batmam"
+    cmd "git clone git@github.com:octanner/batman.git batman"
   fi
   if test -e "spiderman"; then
     yellow 'Spiderman is already installed'
