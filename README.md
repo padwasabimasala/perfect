@@ -119,14 +119,26 @@ perfect select R_14_02_1 # switches perfcommon and perfext to branch R_14_02_1
 perfect select
 ```
 
+# Notes on Bug Fixes
 
-#For more information on NTP, please see [here](https://confluence.octanner.com/pages/viewpage.action?pageId=6465994)
+#### M2_HOME Error
+
+If the environment variable M2_HOME is set while running `perfect install` 
+```
+Exception in thread "main" java.lang.ClassNotFoundException: org.codehaus.plexus.classworlds.launcher.Launcher
+```
+will be thrown. This has been fixed by adding `unset M2_HOME` to the export_env function in perfect-env.
+
+[StackOverflow Discussion](https://stackoverflow.com/questions/6305795/problems-setting-up-maven)
 
 # Contribute
 
 Log bugs using github issues or fix them your self and submit a pull request.
 
-## TODO
+For more information on NTP, please see [here](https://confluence.octanner.com/pages/viewpage.action?pageId=6465994)
+
+# TODO
+
 If a download fails or gets an error eg 404 perfect should notify the user
 It would be nice if we always installed the lastest Ant and Maven
 It would be nice if there were commands to update Ant and Maven to the latest
