@@ -2,25 +2,19 @@
 
 ![Easy Button](http://i.imgur.com/1JqfhPh.jpg)
 
-#For more information on NTP, please see [here](https://confluence.octanner.com/pages/viewpage.action?pageId=6465994)
-
 Perfect is the **EASIEST** way to install NTP
 
+## Prerequisites
+
+Perfect requires Java 1.6, and access to Github and Artifactory and has been developed and tested for Mac but may work on other Nixes.
+
+You can check your Java version with `java -version`.
+
+[More information about Github ssh keys](https://help.github.com/articles/generating-an-ssh-key/)
+
+[More information about setting up Maven and Artifactory](docs/Artifactory Setup.md)
+
 ## Installation
-
-#### Note on Maven and Artifactory
-Maven needs a settings.xml file in its .m2 directory. This file contains information about OC Tanner's Artifactory repo. If you haven't already generated this file, these instructions will help you get it.
-
-1. https://artifactory.octanner.net/webapp/#/home
-2. Artifacts
-3. Set Me Up
-4. Insert Credentials
-5. Generate Maven Settings
-6. Generate Settings
-7. Download the generated file
-8. Move the generated file, settings.xml, to `~/.m2/`
-
-### Current Method 
 
 ```
   # First install perfect
@@ -33,7 +27,33 @@ Maven needs a settings.xml file in its .m2 directory. This file contains informa
 
 ```
 
-The only requirement for perfect is Java 1.6, and having set up your ssh keys for github. It will install Jboss, Ant, and Maven for you, and build ntp.
+## About
+
+Once you have Perfect installed you can use it to install NTP. Currently it is able to build perf-common, perf-ext, and perfork.
+
+The perfect-self install script installs perfect to ~/.perfect. If you want to hack on perfect you can clone it from github and add it to your bashrc manually. See [perfect-self](bin/perfect-self) for more information on perfect installs itself.
+
+By default Perfect installs NTP and it dependencies into ~/ntp. You can change this by passing an argument to perfect install like this `perfect install /some/dir/ntp`. Perfect stores the location of NTP and it's dependencies in ~/.ntp_install_dir. If you ever need to change the location of NTP on your file system you must also update this file.
+
+Perfect is really just a set of Bash scripts. You can learn more about how Perfect works, and how NTP is installed by reading each of the scripts in the [bin directory](bin/). 
+
+Each script cooresponds to a perfect command or a utility. 
+
+1. [perfect](bin/perfect) is a wrapper that creates a pretty interface to the other scripts.
+2. [perfect-build](bin/perfect-build) contains the commands that build NTP and it's dependencies.
+3. [perfect-env](bin/perfect-env) is a utility script Perfect uses to configure it's envrionment.
+4. [perfect-install](bin/perfect-install) contains the commands that download NTP sources and dependencies.
+5. [perfect-run](bin/perfect-run) contains the commands that run built NTP artifacts.
+6. [perfect-select](bin/perfect-select) contains short cut commands for getting around NTP source directories quickly.
+7. [perfect-self](bin/perfect-self) is the Perfect self installation script.
+8. [perfect-tidy](bin/perfect-tidy) contains commands for cleaning up NTP source directories.
+9. [perfect-update](bin/perfect-update) contains commands for updating NTP source directories.
+10. [perfect-usage](bin/perfect-usage) is a utility script Perfect uses to print it's documentation.
+
+### Environment Variables
+
+Perfect installs it's own version of Ant and Maven and sets up it's own environment to ensure everything works as it expects. Perfect doens't hange any of the envrionment variables you have configured in your bashrc or other shell scripts but it may remove or overwrite them in it's own environment.
+
 
 ## Commands
 
@@ -100,7 +120,7 @@ perfect select
 ```
 
 
-
+#For more information on NTP, please see [here](https://confluence.octanner.com/pages/viewpage.action?pageId=6465994)
 
 # Contribute
 
