@@ -104,7 +104,7 @@ perfect select
 
 #### M2_HOME Error
 
-If the environment variable M2_HOME is set while running `perfect install` the error 
+If the environment variable M2_HOME is set while running `perfect install` 
 ```
 Exception in thread "main" java.lang.ClassNotFoundException: org.codehaus.plexus.classworlds.launcher.Launcher
 ```
