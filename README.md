@@ -100,6 +100,17 @@ perfect select
 ```
 
 
+# Notes on Bug Fixes
+
+#### M2_HOME Error
+
+If the environment variable M2_HOME is set while running `perfect install` the error 
+```
+Exception in thread "main" java.lang.ClassNotFoundException: org.codehaus.plexus.classworlds.launcher.Launcher
+```
+will be thrown. This has been fixed by adding `unset M2_HOME` to the perfect-env script.
+
+[StackOverflow Discussion](https://stackoverflow.com/questions/6305795/problems-setting-up-maven)
 
 
 # Contribute
