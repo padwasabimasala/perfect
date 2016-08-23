@@ -8,16 +8,6 @@ Perfect is the **EASIEST** way to install NTP
 
 ## Installation
 
-### Current Method
-
-1. Clone the perfect repo
-2. Add an alias for perfect to your .bash_profile `alias perfect='<path>/perfect/bin/perfect'`
-3. Add `<path>/perfect/bin` to PATH in .bash_profile
-4. Restart your terminal
-5. Create a root directory named "ntp" anywhere you prefer. Example: `mkdir ~/ntp`
-6. `cd ~/ntp`
-7. `perfect install`
-
 #### Note on Maven and Artifactory
 Maven needs a settings.xml file in its .m2 directory. This file contains information about OC Tanner's Artifactory repo. If you haven't already generated this file, these instructions will help you get it.
 
@@ -27,9 +17,10 @@ Maven needs a settings.xml file in its .m2 directory. This file contains informa
 4. Insert Credentials
 5. Generate Maven Settings
 6. Generate Settings
-7. Download the generated file to `~/.m2`
+7. Download the generated file
+8. Move the generated file, settings.xml, to `~/.m2/`
 
-### Old Method (Needs to be updated now that the perfect repo is private. Curl command requires an oAuth token.)
+### Current Method 
 
 ```
   # First install perfect
